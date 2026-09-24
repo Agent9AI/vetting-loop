@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-mz-text;
+  }
+  a {
+    text-underline-offset: 2px;
+  }
+}
+
+@layer components {
+  .mz-link {
+    @apply text-mz-red underline hover:text-mz-red-dark;
+  }
+  .mz-card {
+    @apply rounded-mz border border-mz-border bg-white;
+  }
+  .mz-stat {
+    @apply rounded-mz border border-mz-border border-t-4 border-t-mz-green bg-white p-4;
+  }
+  .mz-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wider text-mz-muted;
+  }
+}
