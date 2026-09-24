@@ -1,116 +1,54 @@
-# The Vetting Loop - Mockups
+# The Vetting Loop — UI Mockups
 
-## Screen 1: Homepage
+Four rendered screen mockups covering every act of the vetting journey.
+Design language: dark background, emerald accent, monospace labels, source-attribution always visible.
 
-```text
-+-----------------------------------------------------------------------------+
-| [LOGO] The Vetting Loop                               [Login] [Submit Flag] |
-+-----------------------------------------------------------------------------+
-|                                                                             |
-|  TRACKING THE INTEGRITY OF PUBLIC APPOINTMENTS                              |
-|                                                                             |
-|  +--------------------+ +--------------------+ +--------------------+       |
-|  |       BEFORE       | |       DURING       | |       AFTER        |       |
-|  | Gather facts &     | | Monitor hearing &  | | Track votes &      |       |
-|  | integrity flags.   | | track questions.   | | final outcome.     |       |
-|  +--------------------+ +--------------------+ +--------------------+       |
-|                                                                             |
-|  == ACTIVE VETTINGS ======================================================  |
-|                                                                             |
-|  +--------------------------------+  +--------------------------------+     |
-|  | Nominee: Jane Doe              |  | Nominee: John Smith            |     |
-|  | Position: CS Health            |  | Position: CS Treasury          |     |
-|  | Status: [VETTING SCHEDULED]    |  | Status: [UNDER REVIEW]         |     |
-|  | Integrity Flags: [ 3 ]         |  | Integrity Flags: [ 1 ]         |     |
-|  | > View Dossier                 |  | > View Dossier                 |     |
-|  +--------------------------------+  +--------------------------------+     |
-|                                                                             |
-+-----------------------------------------------------------------------------+
-| Footer | About | Data Sources | Non-Partisanship Policy                     |
-+-----------------------------------------------------------------------------+
-```
+---
 
-## Screen 2: Nominee Dossier
+## Screen 1 · Homepage
 
-```text
-+-----------------------------------------------------------------------------+
-| [LOGO] The Vetting Loop                               [Login] [Submit Flag] |
-+-----------------------------------------------------------------------------+
-|                                                                             |
-|  +-----------------------------------------------------------------------+  |
-|  | [PHOTO] | JANE DOE                                                    |  |
-|  |         | Nominated for: Cabinet Secretary, Health                    |  |
-|  |         | Status: [VETTING SCHEDULED - OCT 12]                        |  |
-|  +-----------------------------------------------------------------------+  |
-|                                                                             |
-|  [ DOSSIER (Before) ] -- [ HEARING (During) ] -- [ OUTCOME (After) ]        |
-|                                                                             |
-|  +-----------------------------------------+ +-------------------------+    |
-|  | == INTEGRITY FLAGS ==                   | | == STATS ==             |    |
-|  |                                         | | Citizen Questions: 42   |    |
-|  | 1. Procurement Irregularities (2021)    | | Hearing Date: Oct 12    |    |
-|  |    [Source: EACC Report]                | | Status: Pending         |    |
-|  | 2. Conflict of Interest                 | |                         |    |
-|  |    [Source: Auditor General]            | |                         |    |
-|  |                                         | |                         |    |
-|  | == CAREER TIMELINE ==                   | |                         |    |
-|  | - 2018-2022: PS, Min of Transport       | |                         |    |
-|  | - 2013-2018: CEO, Parastatal X          | |                         |    |
-|  +-----------------------------------------+ +-------------------------+    |
-|                                                                             |
-+-----------------------------------------------------------------------------+
-```
+Active vettings feed with three-act framing and per-nominee integrity flag counts.
 
-## Screen 3: Hearing Record / Silence Map
+![Homepage](mockups/01-homepage.jpg)
 
-```text
-+-----------------------------------------------------------------------------+
-| [LOGO] The Vetting Loop                               [Login] [Submit Flag] |
-+-----------------------------------------------------------------------------+
-|                                                                             |
-|  [ DOSSIER (Before) ] -- [ HEARING (During) ] -- [ OUTCOME (After) ]        |
-|                                                                             |
-|  == HEARING RECORD: JANE DOE ==                                             |
-|  Status: [CONCLUDED]  Questions Asked: 12/42 (28% Coverage)                 |
-|                                                                             |
-|  +---------------------------+ +---------------------------------------+    |
-|  | CITIZEN QUESTIONS (42)    | | COMMITTEE QUESTIONS (12)              |    |
-|  +---------------------------+ +---------------------------------------+    |
-|  | [!] EACC Procurement Case | | [ ] How will you improve UHC?         |    |
-|  | [!] Conflict of Interest  | | [ ] What is your 100-day plan?        |    |
-|  | [ ] Policy on UHC         | | [X] Procurement case (Softly asked)   |    |
-|  | [ ] Strike resolution     | | [ ] Budget rationalization            |    |
-|  | [!] Unexplained wealth    | |                                       |    |
-|  +---------------------------+ +---------------------------------------+    |
-|                                                                             |
-|  LEGEND: [!] Flagged Issue  [X] Asked by MP  [ ] Ignored/Silence            |
-|                                                                             |
-+-----------------------------------------------------------------------------+
-```
+---
 
-## Screen 4: Vote Trail
+## Screen 2 · Nominee Dossier (Act 1 — Before)
 
-```text
-+-----------------------------------------------------------------------------+
-| [LOGO] The Vetting Loop                               [Login] [Submit Flag] |
-+-----------------------------------------------------------------------------+
-|                                                                             |
-|  [ DOSSIER (Before) ] -- [ HEARING (During) ] -- [ OUTCOME (After) ]        |
-|                                                                             |
-|  == VOTE OUTCOME: JANE DOE ==                                               |
-|                                                                             |
-|  [ APPROVED ]                                                               |
-|  Summary Stats:                                                             |
-|  [ AYE: 180 ]   [ NAY: 120 ]   [ ABSTAIN: 49 ]                              |
-|                                                                             |
-|  == MP VOTE TABLE ==                                                        |
-|  MP Name            | Constituency     | Party | Vote |                     |
-|  ----------------------------------------------------                       |
-|  Hon. Alice Kamau   | Central          | AAA   | AYE  |                     |
-|  Hon. Bob Odhiambo  | West             | BBB   | NAY  |                     |
-|  Hon. Carol Mutua   | East             | AAA   | AYE  |                     |
-|                                                                             |
-|  Source Attribution: Hansard Report (Oct 20, 2023)                          |
-|                                                                             |
-+-----------------------------------------------------------------------------+
-```
+Source-linked integrity flags, career timeline, and public question queue with upvotes.
+
+![Nominee Dossier](mockups/02-nominee-dossier.jpg)
+
+---
+
+## Screen 3 · Hearing Record / Silence Map (Act 2 — During)
+
+Side-by-side citizen questions vs. committee questions. Color-coded: flagged, asked, inadequate, ignored.
+Coverage metric (28%) is the signature signal — prominent and persistent.
+
+![Hearing Record](mockups/03-hearing-record.jpg)
+
+---
+
+## Screen 4 · Vote Trail (Act 3 — After)
+
+Per-MP vote table with constituency and party. Amber alert surfaces unaddressed integrity flags.
+Export to CSV/JSON for investigative use.
+
+![Vote Trail](mockups/04-vote-trail.jpg)
+
+---
+
+## Design Tokens
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| Background | `#0a0a0a` | Page background |
+| Surface | `#111111` / `#1a1a1a` | Cards, panels |
+| Border | `#262626` | Subtle dividers |
+| Accent | `#10b981` (emerald-500) | Active states, CTAs, source links |
+| Danger | `#ef4444` (red-500) | Flagged issues, NAY votes |
+| Warning | `#f59e0b` (amber-500) | Inadequate responses, alerts |
+| Text primary | `#ffffff` | Headlines |
+| Text secondary | `#a3a3a3` (neutral-400) | Body, descriptions |
+| Monospace label | `font-mono text-xs tracking-widest uppercase` | Act labels, status tags |

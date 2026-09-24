@@ -6,6 +6,20 @@ A citizen platform for parliamentary vetting in Kenya — built as a module on [
 
 ---
 
+## Screenshots
+
+| Homepage | Nominee Dossier |
+|----------|----------------|
+| ![Homepage](docs/mockups/01-homepage.jpg) | ![Dossier](docs/mockups/02-nominee-dossier.jpg) |
+
+| Hearing Record / Silence Map | Vote Trail |
+|------------------------------|------------|
+| ![Hearing](docs/mockups/03-hearing-record.jpg) | ![Vote Trail](docs/mockups/04-vote-trail.jpg) |
+
+→ Full design spec and tokens: [docs/MOCKUPS.md](docs/MOCKUPS.md)
+
+---
+
 ## What It Does
 
 The Vetting Loop closes the gap between citizens and Parliament across three acts of every public appointment:
