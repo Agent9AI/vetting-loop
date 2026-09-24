@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VETTA — Vetting Record · Draft deck v0.1</title>
+<style>
+  @page { size: 1920px 1080px; margin: 0; }
+  :root {
+    --ink: #0b0d10; --panel: #13161b; --line: #262b33;
+    --text: #f4f5f7; --muted: #9aa3ad; --accent: #2fd08c; --red: #e5484d; --amber: #f5a524;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: var(--text); }
+  .slide {
+    width: 1920px; height: 1080px; background: var(--ink); position: relative; overflow: hidden;
+    padding: 110px 130px; page-break-after: always; display: flex; flex-direction: column;
+  }
+  .slide::after {
+    content: attr(data-n); position: absolute; right: 130px; bottom: 56px;
+    font: 500 18px/1 ui-monospace, "DejaVu Sans Mono", monospace; color: #4a525c; letter-spacing: .12em;
+  }
+  .foot {
+    position: absolute; left: 130px; bottom: 56px; font: 500 18px/1 ui-monospace, "DejaVu Sans Mono", monospace;
+    color: #4a525c; letter-spacing: .22em; text-transform: uppercase;
+  }
+  .kicker { font: 600 22px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); margin-bottom: 36px; }
+  h1 { font-size: 96px; line-height: 1.02; font-weight: 800; letter-spacing: -.025em; }
+  h2 { font-size: 68px; line-height: 1.06; font-weight: 800; letter-spacing: -.02em; max-width: 1500px; }
+  p.lede { font-size: 32px; line-height: 1.45; color: var(--muted); max-width: 1250px; margin-top: 36px; }
+  .dim { color: var(--muted); }
+  .red { color: var(--red); } .green { color: var(--accent); } .amber { color: var(--amber); }
+  .row { display: flex; gap: 48px; }
+  .grow { flex: 1; }
+
+  /* Title */
+  .title { justify-content: center; background: radial-gradient(1200px 700px at 85% 20%, #10261d 0%, var(--ink) 60%); }
+  .wordmark { font-size: 200px; font-weight: 900; letter-spacing: .14em; line-height: 1; }
+  .wordmark span { color: var(--accent); }
+  .title .tag { font-size: 44px; font-weight: 600; margin-top: 44px; max-width: 1300px; line-height: 1.25; }
+  .title .sub { font: 500 22px/1.6 ui-monospace, "DejaVu Sans Mono", monospace; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; margin-top: 60px; }
+
+  /* Stat cards */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: auto; }
+  .stat { border-top: 4px solid var(--line); padding-top: 28px; }
+  .stat.r { border-color: var(--red); } .stat.g { border-color: var(--accent); } .stat.a { border-color: var(--amber); }
+  .stat b { display: block; font-size: 84px; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
+  .stat span { display: block; font-size: 24px; line-height: 1.4; color: var(--muted); margin-top: 16px; }
+
+  /* Gate grid */
+  .gate { display: grid; grid-template-columns: repeat(31, 30px); gap: 8px; margin-top: 56px; }
+  .gate i { width: 30px; height: 30px; border-radius: 5px; background: #1d4d38; display: block; }
+  .gate i.x { background: var(--red); }
+  .legend { font-size: 22px; color: var(--muted); margin-top: 24px; font-family: ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .06em; }
+
+  /* Loop */
+  .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 72px; }
+  .act { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 44px; }
+  .act .when { font: 600 20px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; }
+  .act h3 { font-size: 44px; margin: 22px 0 18px; }
+  .act p { font-size: 26px; line-height: 1.45; color: var(--muted); }
+
+  /* Screens */
+  .shot { max-height: 800px; align-self: flex-start; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 80px rgba(0,0,0,.55); background: #fff; }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .bullets { list-style: none; margin-top: 44px; }
+  .bullets li { font-size: 28px; line-height: 1.4; color: var(--muted); padding: 18px 0 18px 36px; border-top: 1px solid var(--line); position: relative; }
+  .bullets li::before { content: ""; position: absolute; left: 0; top: 30px; width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
+  .bullets li b { color: var(--text); font-weight: 700; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin-top: 56px; font-size: 27px; }
+  th { text-align: left; font: 600 18px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: #6b747e; padding: 0 0 20px; border-bottom: 1px solid var(--line); }
+  td { padding: 22px 0; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.35; }
+  td:first-child { font-weight: 700; width: 30%; }
+  td.dim { color: var(--muted); }
+  .pill { display: inline-block; font: 700 17px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .14em; padding: 9px 14px; border-radius: 6px; }
+  .pill.live { background: #123a2a; color: var(--accent); }
+  .pill.ready { background: #11263f; color: #6cb6ff; }
+  .pill.next { background: #2a2111; color: var(--amber); }
+  .pill.open { background: #3a1416; color: #ff8a8d; }
+
+  .quote { font-size: 54px; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; max-width: 1500px; }
+  .draft { position: absolute; top: 46px; right: 130px; font: 700 16px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .2em; color: var(--amber); border: 1px solid #5a4418; padding: 10px 14px; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<!-- 1. Title -->
+<section class="slide title" data-n="01">
+  <div class="draft">DRAFT v0.1 · WORDMARK PLACEHOLDER</div>
+  <div class="wordmark">VETT<span>A</span></div>
+  <div class="tag">The public record of who Parliament lets into power, and on what evidence.</div>
+  <div class="sub">Vetting Record · Civic Tech Tools · Built by Agent9</div>
+  <div class="foot">Agent9 · agent9.dev</div>
+</section>
+
+<!-- 2. Problem -->
+<section class="slide" data-n="02">
+  <div class="kicker">The problem</div>
+  <h1><span class="red">93 nominations.</span><br>One rejection.</h1>
+  <p class="lede">Kenya's Parliament vets every Cabinet Secretary and Principal Secretary before they take office. Across the 2022 Cabinet, the 2022 PS slate and the 2024 reconstitution, the gate said yes 92 times.</p>
+  <div class="gate">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="x"></i>
+  </div>
+  <div class="legend">ONE SQUARE PER NOMINATION · 92 APPROVED · <span class="red">1 REJECTED BY THE HOUSE</span> · CS 2022, PS 2022, CS 2024</div>
+  <div class="foot">Source: Vetting Record ledger, 93 linked records</div>
+</section>
+
+<!-- 3. Evidence -->
+<section class="slide" data-n="03">
+  <div class="kicker">What the record shows</div>
+  <h2>A mass dismissal that returned half the cabinet.</h2>
+  <p class="lede">On 11 July 2024, during the Finance Bill protests, the President dismissed the cabinet. Four weeks later, Parliament approved its replacement. The pattern only appears when appointment histories are linked per person.</p>
+  <div class="stats">
+    <div class="stat g"><b>98.9%</b><span>Approval rate across three vetting cycles (92 of 93)</span></div>
+    <div class="stat r"><b>10 of 19</b><span>2024 appointees who sat in the cabinet dissolved four weeks earlier</span></div>
+    <div class="stat a"><b>9 of 10</b><span>Returnees who simply changed docket</span></div>
+    <div class="stat r"><b>231 days</b><span>Gender docket vacant after the only House rejection</span></div>
+  </div>
+  <div class="foot">Computed from linked records, not asserted</div>
+</section>
+
+<!-- 4. Product loop -->
+<section class="slide" data-n="04">
+  <div class="kicker">What VETTA does</div>
+  <h2>One durable, citable record for every public appointment.</h2>
+  <div class="acts">
+    <div class="act"><div class="when">Before · T-30 to hearing</div><h3>Dossier</h3><p>Source-linked appointment history for every nominee. A public question queue, ranked by citizens.</p></div>
+    <div class="act"><div class="when">During · 28-day window</div><h3>Hearing record</h3><p>Which questions MPs asked, which they ignored, per topic. Silence becomes visible.</p></div>
+    <div class="act"><div class="when">After · post-vote</div><h3>Vote trail</h3><p>Committee report against citizen submissions. A per-MP record, shareable at the next election.</p></div>
+  </div>
+  <div class="foot">Built as a module for Mzalendo's Civic Tech Tools</div>
+</section>
+
+<!-- 5. Ledger screen -->
+<section class="slide" data-n="05">
+  <div class="row grow">
+    <div style="width:640px">
+      <div class="kicker">The ledger</div>
+      <h2 style="font-size:60px">Every appointment linked to the person.</h2>
+      <ul class="bullets">
+        <li><b>93 people, 111 appointments</b>, each with its nomination, decision and exit dates.</li>
+        <li><b>Every fact cited</b> to dated reporting or the official record.</li>
+        <li><b>Cross-checked</b> across independent sources before it ships.</li>
+      </ul>
+    </div>
+    <div class="shot grow"><img src="03-record.png" alt="Vetting Record ledger entry"></div>
+  </div>
+  <div class="foot">Working prototype · screenshot</div>
+</section>
+
+<!-- 6. Signals screen -->
+<section class="slide" data-n="06">
+  <div class="row grow">
+    <div style="width:640px">
+      <div class="kicker">Pattern signals</div>
+      <h2 style="font-size:60px">Computed, not asserted.</h2>
+      <ul class="bullets">
+        <li><b>8 deterministic rules</b> run over the ledger at build time.</li>
+        <li>Each rule is stated in plain language, so <b>anyone can re-derive a match by hand</b>.</li>
+        <li>A signal marks <b>a pattern in the process</b>. It is never a finding about a person.</li>
+        <li>The ledger has already <b>caught two errors</b> in the project's own working notes.</li>
+      </ul>
+    </div>
+    <div class="shot grow"><img src="04-signals.png" alt="Pattern signals page"></div>
+  </div>
+  <div class="foot">Working prototype · screenshot</div>
+</section>
+
+<!-- 7. Trust architecture -->
+<section class="slide" data-n="07">
+  <div class="kicker">Built to stay up</div>
+  <h2>A public record is only useful if it survives pressure.</h2>
+  <table>
+    <tr><th>Layer</th><th style="width:170px">Status</th><th>What it guarantees</th></tr>
+    <tr><td>Static site</td><td><span class="pill live">LIVE</span></td><td class="dim">No database to take down. Any host, mirror or USB stick can serve it.</td></tr>
+    <tr><td>Content hashes</td><td><span class="pill live">LIVE</span></td><td class="dim">sha256 per record plus a ledger root. Tampering on any mirror is detectable.</td></tr>
+    <tr><td>Open data export</td><td><span class="pill live">LIVE</span></td><td class="dim">Ledger, manifest and events published for independent archiving.</td></tr>
+    <tr><td>Signed Nostr events</td><td><span class="pill ready">READY</span></td><td class="dim">Each record is a replaceable, signed event. Blocking one domain does not remove it.</td></tr>
+    <tr><td>Secure tip line</td><td><span class="pill next">PLANNED</span></td><td class="dim">Sealed messages to reviewers, reachable even if the domain is blocked.</td></tr>
+  </table>
+  <div class="foot">No cookies · No trackers</div>
+</section>
+
+<!-- 8. Safety -->
+<section class="slide" data-n="08">
+  <div class="kicker">Defamation safety by design</div>
+  <div class="quote" style="margin-top:20px">"A record with no signals is not an endorsement.<br>A record with signals is not an accusation."</div>
+  <ul class="bullets" style="max-width:1450px;margin-top:64px">
+    <li><b>No bare allegations.</b> Every flag cites a source document, and rejection grounds are recorded verbatim.</li>
+    <li><b>Process, not persons.</b> Signals describe how an appointment moved through the gate.</li>
+    <li><b>Corrections are first-class.</b> A secure reporting channel, and corrections replace the old record everywhere it is mirrored.</li>
+    <li><b>Experimental scoring stays gated.</b> The Integrity Index runs on synthetic data, stamped MOCK and pseudonymised for any public deployment.</li>
+  </ul>
+  <div class="foot">Kenya's 2027 election raises the stakes on accuracy</div>
+</section>
+
+<!-- 9. Status -->
+<section class="slide" data-n="09">
+  <div class="kicker">Where it stands</div>
+  <h2>Working prototype today. Election-ready by 2027.</h2>
+  <table>
+    <tr><th>Phase</th><th style="width:210px">Status</th><th>Scope</th></tr>
+    <tr><td>Ledger and signals</td><td><span class="pill live">BUILT</span></td><td class="dim">93 records sealed, 8 signal rules, overview, vetting gate, scoring sandbox</td></tr>
+    <tr><td>Resilience layer</td><td><span class="pill live">BUILT</span></td><td class="dim">Static build, content hashes, open data, Nostr export</td></tr>
+    <tr><td>Hardening · Oct–Nov 2026</td><td><span class="pill next">NEXT</span></td><td class="dim">Gazette watcher, Hansard parser, citizen questions, CSO submission portal</td></tr>
+    <tr><td>Scale · 2027</td><td><span class="pill next">NEXT</span></td><td class="dim">Kiswahili UI, SMS alerts, per-MP scorecards ahead of the August 2027 election</td></tr>
+    <tr><td>Partnership</td><td><span class="pill open">OPEN</span></td><td class="dim">Hosting and editorial ownership with Mzalendo, not yet agreed</td></tr>
+  </table>
+  <div class="foot">Cloudflare edge · Next.js · open data</div>
+</section>
+
+<!-- 10. Ask -->
+<section class="slide title" data-n="10">
+  <div class="kicker">The ask</div>
+  <h1 style="max-width:1500px">Put the vetting gate on the record before the 2027 election.</h1>
+  <p class="lede" style="font-size:36px">Partner with us to host VETTA under Civic Tech Tools, own the editorial review, and put every appointment in the next Parliament on a public, verifiable record.</p>
+  <div class="sub">Terry Richards · Founder, Agent9 · agent9.dev</div>
+</section>
+
+</body>
+</html>
