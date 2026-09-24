@@ -34,6 +34,29 @@ Each episode leaves a durable, citable record — shareable at the next election
 
 ---
 
+## Integrity Index (Civic Tech Tools)
+
+A 15-year integrity record for public officers, styled to sit under Mzalendo's **Civic Tech Tools** menu.
+
+| Page | Route |
+|------|-------|
+| Index of the 20-member 2024 Cabinet vetting cohort, with ratings | `/integrity` |
+| Profile: rating, 15-year timeline, findings by source, appointment history | `/integrity/[slug]` |
+| Methodology: sources, weights, bands, safeguards | `/integrity/methodology` |
+| Roster status (2027 placeholder) | `/integrity/roster` |
+| Civic Tech Tools landing | `/civic-tech` |
+
+- **Sources:** EACC, Office of the Auditor-General, parliamentary vetting / National Assembly, Mzalendo.
+- **Lookback:** hard 15-year window ending on election day (10 Aug 2027). Older records are shown but score zero.
+- **Scoring and data:** `packages/integrity` (pure TypeScript, unit-tested).
+- **Mock data:** every finding and rating is synthetic and stamped MOCK. Mock bands are assigned by a hash of the slug against a fixed 8/6/4/2 distribution, so no rating reflects the person's reputation. Integrity pages are `noindex`.
+- **Public deployment:** set `NEXT_PUBLIC_MOCK_IDENTITY=pseudonym` to replace real names with neutral labels while findings are synthetic.
+- **2027 roster:** replace `PROFILED_ROSTER` in `packages/integrity/src/roster.ts`.
+
+![Integrity Index](docs/mockups/05-integrity-index.png)
+
+---
+
 ## Architecture Overview
 
 ```

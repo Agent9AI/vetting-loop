@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NavBar } from "@/components/NavBar";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
+
+const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat", display: "swap" });
+
+// Clerk is optional so the public, read-only pages build and preview without keys.
+const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
 export const metadata: Metadata = {
   title: "The Vetting Loop — Parliamentary Accountability for Kenya",
@@ -23,14 +30,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className="bg-neutral-950 text-neutral-100 antialiased">
-          <NavBar />
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+  const page = (
+    <html lang="en" className={montserrat.variable}>
+      <body className="font-sans antialiased">
+        <NavBar authEnabled={clerkEnabled} />
+        {children}
+        <SiteFooter />
+      </body>
+    </html>
   );
+  return clerkEnabled ? <ClerkProvider>{page}</ClerkProvider> : page;
 }

@@ -34,3 +34,4 @@ test-results/
 # Data ingestion scratch
 scripts/data/raw/
 scripts/data/tmp/
+*.tsbuildinfo
