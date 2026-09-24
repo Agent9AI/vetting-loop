@@ -15,6 +15,9 @@ index_name = "vetting-loop-docs"
 [vars]
 ENVIRONMENT = "development"
 
+[ai]
+binding = "AI"
+
 # Production secrets — set via `wrangler secret put`
 # CLERK_SECRET_KEY
 # API_INTERNAL_SECRET

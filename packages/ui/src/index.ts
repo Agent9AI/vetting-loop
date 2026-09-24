@@ -6,3 +6,4 @@ export { StatusBadge } from './StatusBadge';
 export { SourceLink } from './SourceLink';
 export { SectionHeading } from './SectionHeading';
 export { ActBanner } from './ActBanner';
+export { SilenceMapBar } from './SilenceMapBar';

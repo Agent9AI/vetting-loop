@@ -11,10 +11,12 @@ import { hearingRoutes } from "./routes/hearings";
 import { voteRoutes } from "./routes/votes";
 import { reportRoutes } from "./routes/reports";
 import { adminRoutes } from "./routes/admin";
+import { searchRoutes } from "./routes/search";
 
 export type Env = {
   DB: D1Database;
   VECTORIZE: VectorizeIndex;
+  AI: Ai; // Workers AI binding
   CLERK_SECRET_KEY: string;
   API_INTERNAL_SECRET: string;
   MZALENDO_API_KEY: string;
@@ -69,6 +71,10 @@ app.route("/questions", questionRoutes);
 // ── Admin routes (internal secret + Clerk admin role) ─────────────────────────
 
 app.route("/admin", adminRoutes);
+
+// ── Search (semantic via Vectorize + Workers AI) ──────────────────────────────
+
+app.route("/search", searchRoutes);
 
 // ── 404 ───────────────────────────────────────────────────────────────────────
 

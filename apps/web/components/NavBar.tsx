@@ -1,86 +1,208 @@
-import * as React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
-import { AuthControls } from "./AuthControls";
+import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
-const MZ = "https://mzalendo.com";
+// ── Shield / Check Icon ───────────────────────────────────────────────────────
 
-// Mirrors mzalendo.com's primary navigation so the tool sits naturally
-// under "Civic Tech Tools" when embedded.
-const MENU: Array<{ label: string; href: string; children?: Array<{ label: string; href: string; badge?: string }> }> = [
-  { label: "About", href: `${MZ}/about/` },
-  { label: "MPs Performance", href: `${MZ}/mps-performance/` },
-  { label: "Elections Watch 2027", href: `${MZ}/elections-2027/` },
-  {
-    label: "Civic Tech Tools",
-    href: "/civic-tech",
-    children: [
-      { label: "Integrity Index", href: "/integrity", badge: "New" },
-      { label: "The Vetting Loop", href: "/" },
-      { label: "Promise Tracker", href: "https://tracker.mzalendo.com" },
-      { label: "Bonga na Mzalendo", href: `${MZ}/democracy-tools/bonga/` },
-      { label: "Hansard", href: `${MZ}/democracy-tools/hansard/` },
-    ],
-  },
-  { label: "Research & Knowledge", href: `${MZ}/research-and-knowledge/` },
-  { label: "Contact", href: `${MZ}/contact/` },
-];
-
-export function NavBar({ authEnabled = false }: { authEnabled?: boolean }) {
+function ShieldCheckIcon({ className }: { className?: string }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-mz-border bg-white">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-mz-red text-lg font-extrabold text-white">
-            VL
-          </span>
-          <span className="leading-tight">
-            <span className="block text-base font-bold text-mz-red">The Vetting Loop</span>
-            <span className="block text-[11px] font-semibold uppercase tracking-wider text-mz-green">
-              Civic Tech Tools · Prototype
-            </span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth={1.75}
+      stroke="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+      />
+    </svg>
+  );
+}
+
+// ── Hamburger Icon ────────────────────────────────────────────────────────────
+
+function HamburgerIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth={1.75}
+      stroke="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth={1.75}
+      stroke="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 18 18 6M6 6l12 12"
+      />
+    </svg>
+  );
+}
+
+// ── NavLink ───────────────────────────────────────────────────────────────────
+
+function NavLink({
+  href,
+  external,
+  children,
+  onClick,
+}: {
+  href: string;
+  external?: boolean;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  const cls =
+    "font-mono text-sm text-neutral-400 hover:text-emerald-400 transition-colors";
+
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cls}
+        onClick={onClick}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={cls} onClick={onClick}>
+      {children}
+    </Link>
+  );
+}
+
+// ── NavBar ────────────────────────────────────────────────────────────────────
+
+export function NavBar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const closeMobile = () => setMobileOpen(false);
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-md">
+      <nav
+        className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between"
+        aria-label="Main navigation"
+      >
+        {/* Logo */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-neutral-100 hover:text-emerald-400 transition-colors"
+          aria-label="The Vetting Loop — Home"
+        >
+          <ShieldCheckIcon className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+          <span className="font-bold text-base tracking-tight whitespace-nowrap">
+            The Vetting Loop
           </span>
         </Link>
 
-        <ul className="hidden items-center gap-1 lg:flex">
-          {MENU.map((item) => (
-            <li key={item.label} className="group relative">
-              <Link
-                href={item.href}
-                className="block px-3 py-2 text-sm font-medium text-mz-text hover:text-mz-red group-hover:text-mz-red"
-              >
-                {item.label}
-                {item.children && <span className="ml-1 text-[10px] text-mz-muted">▾</span>}
-              </Link>
-              {item.children && (
-                <ul className="invisible absolute left-0 top-full min-w-[240px] rounded-mz border border-mz-border bg-white py-2 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100">
-                  {item.children.map((c) => (
-                    <li key={c.label}>
-                      <Link href={c.href} className="flex items-center justify-between px-4 py-2 text-sm hover:bg-mz-subtle hover:text-mz-red">
-                        {c.label}
-                        {c.badge && (
-                          <span className="rounded-mz bg-mz-green px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-                            {c.badge}
-                          </span>
-                        )}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/integrity"
-            className="rounded-mz bg-mz-red px-3 py-2 text-sm font-semibold text-white hover:bg-mz-red-dark lg:hidden"
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-6">
+          <NavLink href="/about">About</NavLink>
+          <NavLink href="/#active">Active Vettings</NavLink>
+          <NavLink
+            href="https://github.com/Agent9AI/vetting-loop"
+            external
           >
-            Integrity Index
-          </Link>
-          {authEnabled && <AuthControls />}
+            GitHub
+          </NavLink>
         </div>
+
+        {/* Desktop auth */}
+        <div className="hidden md:flex items-center gap-3">
+          <SignedIn>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "w-7 h-7",
+                },
+              }}
+            />
+          </SignedIn>
+          <SignedOut>
+            <div className="text-sm font-medium font-mono bg-emerald-600 hover:bg-emerald-500 text-neutral-950 px-3 py-1.5 rounded transition-colors cursor-pointer">
+              <SignInButton mode="modal" />
+            </div>
+          </SignedOut>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden text-neutral-400 hover:text-neutral-200 transition-colors p-1"
+          onClick={() => setMobileOpen((prev) => !prev)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+        >
+          {mobileOpen ? (
+            <CloseIcon className="w-5 h-5" />
+          ) : (
+            <HamburgerIcon className="w-5 h-5" />
+          )}
+        </button>
       </nav>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-neutral-800 bg-neutral-950 px-6 py-4 space-y-4">
+          <NavLink href="/about" onClick={closeMobile}>
+            About
+          </NavLink>
+          <NavLink href="/#active" onClick={closeMobile}>
+            Active Vettings
+          </NavLink>
+          <NavLink
+            href="https://github.com/Agent9AI/vetting-loop"
+            external
+            onClick={closeMobile}
+          >
+            GitHub
+          </NavLink>
+          <div className="pt-2 border-t border-neutral-800">
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <div className="inline-block text-sm font-medium font-mono bg-emerald-600 hover:bg-emerald-500 text-neutral-950 px-3 py-1.5 rounded transition-colors cursor-pointer">
+                <SignInButton mode="modal" />
+              </div>
+            </SignedOut>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

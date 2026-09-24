@@ -1,0 +1,952 @@
+openapi: 3.1.0
+
+info:
+  title: The Vetting Loop API
+  version: 0.1.0
+  description: |
+    Structured civic accountability data for Kenya's parliamentary vetting hearings.
+
+    The API provides read access to nominee dossiers, integrity flags, citizen questions,
+    hearing records, MP votes, and committee reports. Write operations (flag creation,
+    nominee management) require admin-level authentication.
+
+    All timestamps are ISO 8601 strings. All IDs are opaque strings (ULIDs).
+
+  contact:
+    name: Agent9
+    email: hello@agent9.ai
+    url: https://vettingloop.ke
+
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8787
+    description: Local development (wrangler dev)
+  - url: https://api.vettingloop.ke
+    description: Production
+
+security:
+  - ClerkJWT: []
+
+components:
+  securitySchemes:
+    ClerkJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Clerk-issued JWT. Obtain by signing in at vettingloop.ke.
+        Pass as `Authorization: Bearer <token>`.
+        Public GET endpoints do not require authentication.
+        Admin endpoints require a `admin` role claim in the JWT.
+
+  schemas:
+    # ── Shared ──────────────────────────────────────────────────────────────
+
+    ApiResponse:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Present on success
+        error:
+          type: string
+          description: Human-readable error message on failure
+
+    PaginationMeta:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        perPage:
+          type: integer
+
+    # ── Source Documents ─────────────────────────────────────────────────────
+
+    SourceDocument:
+      type: object
+      required: [id, title, url, publishedAt, publisher, documentType]
+      properties:
+        id:
+          type: string
+          example: "01J9XKZF0000000000000001"
+        title:
+          type: string
+          example: "Kenya Gazette Supplement No. 142 — 2026-09-01"
+        url:
+          type: string
+          format: uri
+          example: "https://kenyalaw.org/lex/rest/db/kenyalex/KenyaGazette/..."
+        publishedAt:
+          type: string
+          format: date
+          example: "2026-09-01"
+        publisher:
+          type: string
+          example: "Government Printer"
+        documentType:
+          type: string
+          enum: [gazette, eacc_report, court_record, hansard, committee_report, media, other]
+        createdAt:
+          type: string
+          format: date-time
+
+    # ── Nominees ─────────────────────────────────────────────────────────────
+
+    Nominee:
+      type: object
+      required: [id, fullName, position, appointmentType, gazetteDate, status, slug]
+      properties:
+        id:
+          type: string
+          example: "01J9XKZF0000000000000002"
+        fullName:
+          type: string
+          example: "Jane Doe"
+        position:
+          type: string
+          example: "Attorney General"
+        appointmentType:
+          type: string
+          example: "Presidential — Article 156(1)"
+        gazetteDate:
+          type: string
+          format: date
+          example: "2026-09-01"
+        hearingDate:
+          type: string
+          format: date
+          nullable: true
+          example: "2026-10-14"
+        status:
+          type: string
+          enum: [gazetted, hearing_scheduled, hearing_complete, approved, rejected]
+          example: "hearing_scheduled"
+        summary:
+          type: string
+          nullable: true
+        slug:
+          type: string
+          example: "jane-doe-attorney-general"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    NomineeDetail:
+      allOf:
+        - $ref: '#/components/schemas/Nominee'
+        - type: object
+          properties:
+            integrityFlags:
+              type: array
+              items:
+                $ref: '#/components/schemas/IntegrityFlag'
+            careerEntries:
+              type: array
+              items:
+                $ref: '#/components/schemas/CareerEntry'
+
+    # ── Integrity Flags ───────────────────────────────────────────────────────
+
+    IntegrityFlag:
+      type: object
+      required: [id, nomineeId, summary, severity, sources]
+      properties:
+        id:
+          type: string
+          example: "01J9XKZF0000000000000003"
+        nomineeId:
+          type: string
+        summary:
+          type: string
+          example: "Undisclosed directorship in company awarded government contracts"
+        severity:
+          type: string
+          enum: [low, medium, high]
+          example: "high"
+        sources:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/SourceDocument'
+          description: At least one source is required. The API rejects flags with no sources.
+        createdAt:
+          type: string
+          format: date-time
+
+    # ── Career Entries ────────────────────────────────────────────────────────
+
+    CareerEntry:
+      type: object
+      required: [id, nomineeId, role, organisation, startYear]
+      properties:
+        id:
+          type: string
+        nomineeId:
+          type: string
+        role:
+          type: string
+          example: "Director of Public Prosecutions"
+        organisation:
+          type: string
+          example: "Office of the Director of Public Prosecutions"
+        startYear:
+          type: integer
+          example: 2018
+        endYear:
+          type: integer
+          nullable: true
+          example: 2023
+        notes:
+          type: string
+          nullable: true
+
+    # ── Questions ─────────────────────────────────────────────────────────────
+
+    Question:
+      type: object
+      required: [id, nomineeId, body, upvotes, status, submittedAt]
+      properties:
+        id:
+          type: string
+        nomineeId:
+          type: string
+        body:
+          type: string
+          example: "Has the nominee disclosed their financial interests in private entities that have received government contracts?"
+        context:
+          type: string
+          nullable: true
+          example: "EACC report (2025) lists three related companies."
+        upvotes:
+          type: integer
+          example: 47
+        status:
+          type: string
+          enum: [pending, asked, ignored, partially_asked]
+          example: "pending"
+        askedAt:
+          type: string
+          format: date-time
+          nullable: true
+        askedBy:
+          type: string
+          nullable: true
+        submittedAt:
+          type: string
+          format: date-time
+        submitterLabel:
+          type: string
+          nullable: true
+          example: "Kenya Human Rights Commission"
+
+    QuestionSubmission:
+      type: object
+      required: [nomineeId, body]
+      properties:
+        nomineeId:
+          type: string
+          description: ID of the nominee this question concerns
+        body:
+          type: string
+          minLength: 20
+          maxLength: 1000
+          description: The question text
+        context:
+          type: string
+          maxLength: 500
+          description: Optional supporting context (e.g. reference to a public document)
+        submitterLabel:
+          type: string
+          maxLength: 100
+          description: Optional display label for the submitter (organisation name, "Citizen", etc.)
+
+    # ── Hearing Records ───────────────────────────────────────────────────────
+
+    HearingRecord:
+      type: object
+      required: [id, nomineeId, date, committeeId, committeeName, transcriptSourceId]
+      properties:
+        id:
+          type: string
+        nomineeId:
+          type: string
+        date:
+          type: string
+          format: date
+          example: "2026-10-14"
+        committeeId:
+          type: string
+          example: "KNA-CLSJ"
+        committeeName:
+          type: string
+          example: "Committee on Justice and Legal Affairs"
+        transcriptSourceId:
+          type: string
+        citizenQuestionsAsked:
+          type: integer
+          example: 14
+        citizenQuestionsIgnored:
+          type: integer
+          example: 11
+        silenceMapStat:
+          type: string
+          readOnly: true
+          example: "11 of 14 citizen questions ignored"
+          description: Computed field — not stored in D1
+        createdAt:
+          type: string
+          format: date-time
+
+    HearingExchange:
+      type: object
+      required: [id, hearingId, topic, askedBy, questionText]
+      properties:
+        id:
+          type: string
+        hearingId:
+          type: string
+        questionId:
+          type: string
+          nullable: true
+          description: Set when this exchange addresses a citizen-submitted question
+        topic:
+          type: string
+          enum: [integrity, competence, financial_disclosure, track_record, policy_position, procedural, other]
+        askedBy:
+          type: string
+          example: "Hon. Peter Kaluma, MP"
+        questionText:
+          type: string
+        responseText:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          nullable: true
+          example: "00:42:15"
+        addressesCitizenQuestion:
+          type: boolean
+          example: false
+
+    HearingDetail:
+      allOf:
+        - $ref: '#/components/schemas/HearingRecord'
+        - type: object
+          properties:
+            exchanges:
+              type: array
+              items:
+                $ref: '#/components/schemas/HearingExchange'
+
+    # ── MP Votes ──────────────────────────────────────────────────────────────
+
+    MpVote:
+      type: object
+      required: [id, nomineeId, mpId, sourceId, choice, recordedAt]
+      properties:
+        id:
+          type: string
+        nomineeId:
+          type: string
+        mpId:
+          type: string
+        mp:
+          type: object
+          description: Embedded MP summary
+          properties:
+            fullName:
+              type: string
+              example: "Hon. Alice Wahome"
+            constituency:
+              type: string
+              example: "Kandara"
+            party:
+              type: string
+              example: "UDA"
+            chamber:
+              type: string
+              enum: [national_assembly, senate]
+        sourceId:
+          type: string
+        choice:
+          type: string
+          enum: [aye, nay, abstain, absent]
+          example: "aye"
+        recordedAt:
+          type: string
+          format: date-time
+
+    # ── Committee Reports ─────────────────────────────────────────────────────
+
+    CommitteeReport:
+      type: object
+      required: [id, nomineeId, publishedAt, sourceId, recommendation]
+      properties:
+        id:
+          type: string
+        nomineeId:
+          type: string
+        publishedAt:
+          type: string
+          format: date
+        sourceId:
+          type: string
+        recommendation:
+          type: string
+          enum: [approve, reject, defer]
+          example: "approve"
+        submissionsReflected:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+
+    # ── Admin input schemas ───────────────────────────────────────────────────
+
+    AdminCreateNominee:
+      type: object
+      required: [fullName, position, appointmentType, gazetteDate, slug]
+      properties:
+        fullName:
+          type: string
+        position:
+          type: string
+        appointmentType:
+          type: string
+        gazetteDate:
+          type: string
+          format: date
+        hearingDate:
+          type: string
+          format: date
+        slug:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+        summary:
+          type: string
+
+    AdminCreateFlag:
+      type: object
+      required: [nomineeId, summary, severity, sourceIds]
+      properties:
+        nomineeId:
+          type: string
+        summary:
+          type: string
+          minLength: 20
+          maxLength: 500
+        severity:
+          type: string
+          enum: [low, medium, high]
+        sourceIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+          description: Must reference existing source_documents. API rejects if empty.
+
+    # ── Error responses ───────────────────────────────────────────────────────
+
+    ErrorResponse:
+      type: object
+      required: [success, error]
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Not found"
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Unauthorized"
+
+    Forbidden:
+      description: Authenticated but insufficient role (admin required)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Forbidden — admin role required"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Not found"
+
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error, details]
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: "Validation failed"
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                    message:
+                      type: string
+
+# ── Paths ─────────────────────────────────────────────────────────────────────
+
+paths:
+
+  /health:
+    get:
+      operationId: getHealth
+      summary: API health check
+      description: Returns 200 if the Worker and D1 binding are reachable.
+      security: []
+      tags: [System]
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, timestamp]
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  # ── Nominees ───────────────────────────────────────────────────────────────
+
+  /nominees:
+    get:
+      operationId: listNominees
+      summary: List nominees
+      description: Returns all nominees, optionally filtered by status.
+      security: []
+      tags: [Nominees]
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [gazetted, hearing_scheduled, hearing_complete, approved, rejected]
+          description: Filter by nominee lifecycle status
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: List of nominees
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Nominee'
+                      meta:
+                        $ref: '#/components/schemas/PaginationMeta'
+
+  /nominees/{slug}:
+    get:
+      operationId: getNominee
+      summary: Get nominee dossier
+      description: Returns a nominee with embedded integrity flags and career entries.
+      security: []
+      tags: [Nominees]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          example: jane-doe-attorney-general
+      responses:
+        '200':
+          description: Nominee dossier
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/NomineeDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── Questions ─────────────────────────────────────────────────────────────
+
+  /questions:
+    get:
+      operationId: listQuestions
+      summary: List citizen questions
+      description: Returns questions, ordered by upvotes descending.
+      security: []
+      tags: [Questions]
+      parameters:
+        - name: nomineeId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter to a specific nominee
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, asked, ignored, partially_asked]
+      responses:
+        '200':
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Question'
+
+    post:
+      operationId: submitQuestion
+      summary: Submit a citizen question
+      description: |
+        Authenticated citizens can submit questions for an upcoming vetting hearing.
+        Questions start in `pending` status.
+      tags: [Questions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionSubmission'
+      responses:
+        '201':
+          description: Question created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Question'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /questions/{id}/upvote:
+    post:
+      operationId: upvoteQuestion
+      summary: Upvote a citizen question
+      description: Increments the upvote count. One upvote per authenticated user per question.
+      tags: [Questions]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updated question with new upvote count
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Question'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── Hearings ──────────────────────────────────────────────────────────────
+
+  /hearings:
+    get:
+      operationId: listHearings
+      summary: List hearing records
+      security: []
+      tags: [Hearings]
+      parameters:
+        - name: nomineeId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of hearing records
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HearingRecord'
+
+  /hearings/{id}:
+    get:
+      operationId: getHearing
+      summary: Get hearing detail with exchanges
+      security: []
+      tags: [Hearings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hearing detail with embedded exchanges
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/HearingDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── Votes ──────────────────────────────────────────────────────────────────
+
+  /votes:
+    get:
+      operationId: listVotes
+      summary: List MP votes
+      description: Returns votes optionally filtered by nominee. Embeds MP summary in each record.
+      security: []
+      tags: [Votes]
+      parameters:
+        - name: nomineeId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of votes
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MpVote'
+
+  # ── Reports ───────────────────────────────────────────────────────────────
+
+  /reports:
+    get:
+      operationId: listReports
+      summary: List committee reports
+      security: []
+      tags: [Reports]
+      parameters:
+        - name: nomineeId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of committee reports
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CommitteeReport'
+
+  # ── Admin ─────────────────────────────────────────────────────────────────
+
+  /admin/health:
+    get:
+      operationId: getAdminHealth
+      summary: Admin health check (authenticated)
+      description: Confirms the caller has a valid admin-role JWT. Use as a pre-flight check for admin tooling.
+      tags: [Admin]
+      security:
+        - ClerkJWT: []
+      responses:
+        '200':
+          description: Authenticated admin confirmed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  role:
+                    type: string
+                    example: "admin"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /admin/nominees:
+    post:
+      operationId: createNominee
+      summary: Create a nominee (admin)
+      tags: [Admin]
+      security:
+        - ClerkJWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateNominee'
+      responses:
+        '201':
+          description: Nominee created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Nominee'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /admin/flags:
+    post:
+      operationId: createFlag
+      summary: Create an integrity flag (admin)
+      description: |
+        Creates an integrity flag with one or more linked source documents.
+        The API will reject the request if `sourceIds` is empty — the source-integrity
+        constraint is enforced here before any write to D1.
+      tags: [Admin]
+      security:
+        - ClerkJWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateFlag'
+      responses:
+        '201':
+          description: Flag created with source links
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/IntegrityFlag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+tags:
+  - name: System
+    description: Health checks and metadata
+  - name: Nominees
+    description: Nominee dossiers, flags, and career history
+  - name: Questions
+    description: Citizen question submission and upvoting
+  - name: Hearings
+    description: Hearing records and exchange transcripts
+  - name: Votes
+    description: MP votes per nominee
+  - name: Reports
+    description: Committee report summaries
+  - name: Admin
+    description: Authenticated write operations — admin role required
