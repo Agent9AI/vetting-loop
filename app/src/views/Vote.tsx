@@ -5,7 +5,7 @@ import { loadDivisions, loadEpisode, loadHansardExcerpts, placeholderDivisions }
 import Triptych from './Triptych';
 import { Link } from 'react-router-dom';
 
-export default function Vote() {
+export function VoteRecord() {
   const [d, setD] = useState<DivisionsFile | null>(null);
   const [ep, setEp] = useState<Episode | null>(null);
   const [hx, setHx] = useState<HansardExcerpt[] | null>(null);
@@ -14,7 +14,7 @@ export default function Vote() {
     loadEpisode().then((e) => setEp(e));
     loadHansardExcerpts().then((x) => setHx(x?.excerpts ?? null));
   }, []);
-  if (!d) return <main className="doc" />;
+  if (!d) return null;
 
   const v = d.vetting_vote;
   // Voice-vote motion is the anchor; recorded divisions list is data-driven.
@@ -25,7 +25,7 @@ export default function Vote() {
   const placeholder = /PLACEHOLDER/.test(v.motion_text);
 
   return (
-    <main className="doc">
+    <>
       <header className="masthead">
         <p className="kicker"><span className="rule"></span>Act 3 · After · the accountability trail</p>
         <h1>The Vote That Wasn’t Recorded</h1>
@@ -136,9 +136,13 @@ export default function Vote() {
           <section className="prior-cycle" style={{ margin: 'var(--s6) 0' }}>
         <p style={{ margin: 0 }}>
           This episode is one batch of <b>93 nominations across 10 vetting cycles</b> since 2022.{' '}
-          <Link to="/ledger" style={{ textDecoration: 'underline' }}>View the full people ledger →</Link>
+          <Link to="/vote" style={{ textDecoration: 'underline' }}>View the full people ledger →</Link>
         </p>
       </section>
-</main>
+    </>
   );
+}
+
+export default function Vote() {
+  return <main className="doc"><VoteRecord /></main>;
 }

@@ -52,8 +52,8 @@ export default function About() {
             what the committee asked, and how each decision was made. Every claim is sourced.
           </p>
           <div className="hero-cta">
-            <Link className="btn btn-primary" to="/nominees">Open the nominee register <span aria-hidden="true">→</span></Link>
-            <Link className="btn btn-ghost" to="/vote">See how the vote went</Link>
+            <Link className="btn btn-primary" to="/voice">Open the nominee register <span aria-hidden="true">→</span></Link>
+            <Link className="btn btn-ghost" to="/verdict">See how the vote went</Link>
           </div>
         </div>
         <figure className="hero-exhibit">
@@ -144,19 +144,19 @@ export default function About() {
           <p className="dek">Before the hearing, during the hearings, after the vote. Follow the documents.</p>
         </div>
         <div className="acts-grid">
-          <Link className="card" to="/nominees">
+          <Link className="card" to="/voice">
             <span className="act-no">Act 1 · Before</span>
             <h3>The Nominee File</h3>
             <p>Source-linked dossier: CV, track record, integrity flags. Public question queue with upvotes.</p>
             <span className="go">Open the register →</span>
           </Link>
-          <Link className="card" to="/hearings">
+          <Link className="card" to="/hearing">
             <span className="act-no">Act 2 · During</span>
             <h3>The hearing record</h3>
             <p>Who asked what, tagged by topic, with citizen questions shown alongside: asked vs. ignored.</p>
             <span className="go">Open the hearing record →</span>
           </Link>
-          <Link className="card" to="/vote">
+          <Link className="card" to="/verdict">
             <span className="act-no">Act 3 · After</span>
             <h3>The accountability trail</h3>
             <p>Report vs. submissions, side by side. Per-MP vote on every approval, in one query.</p>
@@ -322,7 +322,7 @@ export default function About() {
           <h2>Beyond the August 2024 episode</h2>
         </div>
         <div className="acts-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
-          <Link className="card" to="/ledger">
+          <Link className="card" to="/vote">
             <span className="act-no">Every person</span>
             <h3>The people ledger</h3>
             <p>{ledger ? `${nPeople} people, ${allAppointments.length} appointments` : 'Every person and appointment'}, verification tiers on every entry.</p>

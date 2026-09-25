@@ -68,7 +68,7 @@ export default function NostrFallback() {
         </p>
         <p style={{ fontSize: '0.9em' }}>
           Read the <Link to="/methodology">methodology</Link> for how the record is sourced, and{' '}
-          <Link to="/vote">the vote record</Link> for what the absence of a division means here.
+          <Link to="/verdict">the vote record</Link> for what the absence of a division means here.
         </p>
       </main>
     );

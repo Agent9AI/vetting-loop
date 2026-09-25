@@ -37,7 +37,7 @@ export default function NomineeDossier() {
     return (
       <main className="doc">
         <div className="empty" style={{ marginTop: 'var(--s12)' }}>
-          Nominee not found. <Link to="/nominees">Return to the register</Link>.
+          Nominee not found. <Link to="/voice">Return to the register</Link>.
         </div>
       </main>
     );
@@ -192,7 +192,7 @@ export default function NomineeDossier() {
             <h4>Asked ({asked.length})</h4>
             {asked.length === 0 ? <Empty>No questions recorded.</Empty> : (
               <>
-              <p className="kicker"><span className="rule"></span>Act 2 · During · the hearing record · <Link to="/hearings">batch view</Link></p>
+              <p className="kicker"><span className="rule"></span>Act 2 · During · the hearing record · <Link to="/hearing">batch view</Link></p>
               <ul>
                 {asked.map((q, i) => (
                   <li key={i}>

@@ -228,7 +228,7 @@ export default function Ledger() {
                       <div key={a.id} className="led-appt">
                         <span className="led-portfolio">{a.portfolio}</span>
                         {a.cycle === 'cs-2024' ? (
-                          <Link className={'led-outcome led-out-' + a.outcome} to="/vote" title="How this batch was approved: the voice vote with no recorded division">{a.outcome}</Link>
+                          <Link className={'led-outcome led-out-' + a.outcome} to="/verdict" title="How this batch was approved: the voice vote with no recorded division">{a.outcome}</Link>
                         ) : (
                           <span className={'led-outcome led-out-' + a.outcome}>{a.outcome}</span>
                         )}

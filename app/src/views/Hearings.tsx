@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Episode } from '../types';
 import { loadEpisode, placeholderEpisode } from '../data';
+import { VoteRecord } from './Vote';
 
 // Act 2 · During - the hearing record at batch scale.
 // What citizens submitted (memoranda) vs what the committee asked (hearing record),
@@ -32,7 +33,7 @@ export default function Hearings() {
         <h1>What was asked, and what was submitted</h1>
         <p className="standfirst">
           The public had already submitted their memoranda before the sitting began. That record
-          lives in <Link to="/nominees">Act 1, with the nominees they were filed against</Link>. This page is what
+          lives in <Link to="/voice">Act 1, with the nominees they were filed against</Link>. This page is what
           the committee did with them in the room: what <b>{nom.length} nominees</b> were actually asked
           across four days at County Hall, and how each submission was handled, preserved
           verbatim from the Committee's own report, page-referenced.</p>
@@ -113,9 +114,11 @@ export default function Hearings() {
       <section className="prior-cycle" style={{ margin: 'var(--s6) 0' }}>
         <p style={{ margin: 0 }}>
           Next: how the batch was decided.{' '}
-          <Link to="/vote" style={{ textDecoration: 'underline' }}>Act 3 · The Vote That Wasn't Recorded →</Link>
+          <Link to="/verdict" style={{ textDecoration: 'underline' }}>Act 3 · The Vote That Wasn't Recorded →</Link>
         </p>
       </section>
+
+      <VoteRecord />
     </main>
   );
 }

@@ -21,10 +21,9 @@ function Chrome({ children }: { children: ReactNode }) {
   // The three acts read as one sequence: phase above, subject below.
   const acts = [
     { to: '/', no: '', phase: 'Home', label: 'About', aria: 'About VETTA' },
-    { to: '/nominees', no: '01', phase: 'BEFORE', label: 'THE VOICE', aria: 'Act 1, before: the voice' },
-    { to: '/hearings', no: '02', phase: 'DURING', label: 'THE VOTE', aria: 'Act 2, during: the vote' },
-    { to: '/vote', no: '03', phase: 'AFTER', label: 'VERDICT', aria: 'Act 3, after: the verdict' },
-    { to: '/ledger', no: '', phase: 'The data', label: 'Ledger', aria: 'Ledger, the full data', cta: true },
+    { to: '/voice', no: '01', phase: 'BEFORE', label: 'THE VOICE', aria: 'Act 1, before: the voice' },
+    { to: '/vote', no: '02', phase: 'DURING', label: 'THE VOTE', aria: 'Act 2, during: the vote' },
+    { to: '/verdict', no: '03', phase: 'AFTER', label: 'VERDICT', aria: 'Act 3, after: the verdict' },
   ];
   return (
     <>
@@ -36,7 +35,7 @@ function Chrome({ children }: { children: ReactNode }) {
           </Link>
           <nav className="acts" aria-label="Main navigation">
             {acts.map((a) => (
-              <NavLink key={a.to} to={a.to} end className={a.cta ? 'act-cta' : a.no ? 'act-seq' : undefined} aria-label={a.aria} aria-current={loc.pathname === a.to ? 'page' : undefined}>
+              <NavLink key={a.to} to={a.to} end className={a.no ? 'act-seq' : undefined} aria-label={a.aria} aria-current={loc.pathname === a.to ? 'page' : undefined}>
                 <span className="no">{a.no && <b>{a.no}</b>}{a.phase}</span>
                 {a.label}
               </NavLink>
@@ -82,11 +81,11 @@ export default function App() {
       <Chrome>
         <Routes>
           <Route path="/" element={<About />} />
-          <Route path="/nominees" element={<Nominees />} />
+          <Route path="/voice" element={<Nominees />} />
           <Route path="/nominee/:idOrSlug" element={<NomineeDossier />} />
-          <Route path="/hearings" element={<Hearings />} />
-          <Route path="/vote" element={<Vote />} />
-          <Route path="/ledger" element={<Ledger />} />
+          <Route path="/hearing" element={<Hearings />} />
+          <Route path="/vote" element={<Ledger />} />
+          <Route path="/verdict" element={<Vote />} />
           <Route path="/signals" element={<Methodology />} />
           <Route path="/methodology" element={<Methodology />} />
           <Route path="/about" element={<About />} />
