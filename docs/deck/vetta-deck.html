@@ -2,223 +2,349 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>VETTA — Vetting Record · Draft deck v0.1</title>
+<title>VETTA · Public Appointments Record · Consultation draft v0.2</title>
 <style>
+  @font-face { font-family: "Source Serif 4"; font-weight: 400; src: url(fonts/source-serif-4-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Source Serif 4"; font-weight: 400; font-style: italic; src: url(fonts/source-serif-4-latin-400-italic.woff2) format("woff2"); }
+  @font-face { font-family: "Source Serif 4"; font-weight: 600; src: url(fonts/source-serif-4-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Source Serif 4"; font-weight: 700; src: url(fonts/source-serif-4-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: url(fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url(fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url(fonts/ibm-plex-sans-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 700; src: url(fonts/ibm-plex-sans-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Mono"; font-weight: 600; src: url(fonts/ibm-plex-mono-latin-600-normal.woff2) format("woff2"); }
+
   @page { size: 1920px 1080px; margin: 0; }
   :root {
-    --ink: #0b0d10; --panel: #13161b; --line: #262b33;
-    --text: #f4f5f7; --muted: #9aa3ad; --accent: #2fd08c; --red: #e5484d; --amber: #f5a524;
+    --ink: #0B1220; --paper: #F4F5F2; --rule: #C8CCC3; --rule-2: #DADDD5;
+    --text: #1F2A3D; --muted: #56627A; --steel: #64748B;
+    --signal: #14B8A6; --signal-deep: #0F766E; --signal-pale: #6FD3C4;
+    --crimson: #A11D2F; --ochre: #94620F; --slate-blue: #2F5C8A;
+    --serif: "Source Serif 4", "DejaVu Serif", Georgia, serif;
+    --sans: "IBM Plex Sans", "Liberation Sans", Arial, sans-serif;
+    --mono: "IBM Plex Mono", "DejaVu Sans Mono", monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #000; font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: var(--text); }
+  body { background: #2a2f38; font-family: var(--sans); color: var(--text); -webkit-font-smoothing: antialiased; }
+
   .slide {
-    width: 1920px; height: 1080px; background: var(--ink); position: relative; overflow: hidden;
-    padding: 110px 130px; page-break-after: always; display: flex; flex-direction: column;
+    width: 1920px; height: 1080px; background: var(--paper); position: relative; overflow: hidden;
+    padding: 180px 140px 120px; page-break-after: always; display: flex; flex-direction: column;
   }
-  .slide::after {
-    content: attr(data-n); position: absolute; right: 130px; bottom: 56px;
-    font: 500 18px/1 ui-monospace, "DejaVu Sans Mono", monospace; color: #4a525c; letter-spacing: .12em;
-  }
-  .foot {
-    position: absolute; left: 130px; bottom: 56px; font: 500 18px/1 ui-monospace, "DejaVu Sans Mono", monospace;
-    color: #4a525c; letter-spacing: .22em; text-transform: uppercase;
-  }
-  .kicker { font: 600 22px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); margin-bottom: 36px; }
-  h1 { font-size: 96px; line-height: 1.02; font-weight: 800; letter-spacing: -.025em; }
-  h2 { font-size: 68px; line-height: 1.06; font-weight: 800; letter-spacing: -.02em; max-width: 1500px; }
-  p.lede { font-size: 32px; line-height: 1.45; color: var(--muted); max-width: 1250px; margin-top: 36px; }
-  .dim { color: var(--muted); }
-  .red { color: var(--red); } .green { color: var(--accent); } .amber { color: var(--amber); }
-  .row { display: flex; gap: 48px; }
-  .grow { flex: 1; }
 
-  /* Title */
-  .title { justify-content: center; background: radial-gradient(1200px 700px at 85% 20%, #10261d 0%, var(--ink) 60%); }
-  .wordmark { font-size: 200px; font-weight: 900; letter-spacing: .14em; line-height: 1; }
-  .wordmark span { color: var(--accent); }
-  .title .tag { font-size: 44px; font-weight: 600; margin-top: 44px; max-width: 1300px; line-height: 1.25; }
-  .title .sub { font: 500 22px/1.6 ui-monospace, "DejaVu Sans Mono", monospace; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; margin-top: 60px; }
+  /* Masthead: identical on every paper slide, like a letterhead */
+  .mast { position: absolute; left: 140px; right: 140px; top: 52px; height: 66px; display: flex; align-items: center; gap: 20px;
+          border-bottom: 3px solid var(--ink); }
+  .mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -9px; border-bottom: 1px solid var(--ink); }
+  .mast img { height: 38px; }
+  .mast .name { font: 600 22px/1 var(--sans); letter-spacing: .34em; color: var(--ink); }
+  .mast .div { width: 1px; height: 28px; background: var(--rule); }
+  .mast .unit { font: 500 19px/1 var(--sans); letter-spacing: .04em; color: var(--muted); }
+  .mast .ref { margin-left: auto; font: 500 16px/1 var(--mono); letter-spacing: .16em; color: var(--muted); text-transform: uppercase; }
 
-  /* Stat cards */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: auto; }
-  .stat { border-top: 4px solid var(--line); padding-top: 28px; }
-  .stat.r { border-color: var(--red); } .stat.g { border-color: var(--accent); } .stat.a { border-color: var(--amber); }
-  .stat b { display: block; font-size: 84px; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
-  .stat span { display: block; font-size: 24px; line-height: 1.4; color: var(--muted); margin-top: 16px; }
+  .foot { position: absolute; left: 140px; right: 140px; bottom: 50px; display: flex; align-items: center; gap: 24px;
+          border-top: 1px solid var(--rule); padding-top: 18px;
+          font: 500 15px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--steel); }
+  .foot .pg { margin-left: auto; color: var(--ink); letter-spacing: .1em; }
 
-  /* Gate grid */
-  .gate { display: grid; grid-template-columns: repeat(31, 30px); gap: 8px; margin-top: 56px; }
-  .gate i { width: 30px; height: 30px; border-radius: 5px; background: #1d4d38; display: block; }
-  .gate i.x { background: var(--red); }
-  .legend { font-size: 22px; color: var(--muted); margin-top: 24px; font-family: ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .06em; }
+  .sec { font: 600 19px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--signal-deep); margin-bottom: 26px; display: flex; align-items: center; gap: 16px; }
+  .sec::before { content: ""; width: 36px; height: 3px; background: var(--signal); }
+  h1, h2 { font-family: var(--serif); color: var(--ink); font-weight: 600; letter-spacing: -.012em; }
+  h1 { font-size: 92px; line-height: 1.04; }
+  h2 { font-size: 62px; line-height: 1.1; max-width: 1480px; }
+  p.lede { font-size: 29px; line-height: 1.5; color: var(--muted); max-width: 1240px; margin-top: 30px; }
+  b, strong { color: var(--ink); font-weight: 600; }
+  .crimson { color: var(--crimson); }
 
-  /* Loop */
-  .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 72px; }
-  .act { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 44px; }
-  .act .when { font: 600 20px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; }
-  .act h3 { font-size: 44px; margin: 22px 0 18px; }
-  .act p { font-size: 26px; line-height: 1.45; color: var(--muted); }
+  /* ---------- Cover and closing (ink) ---------- */
+  .dark { background: var(--ink); color: #E6E9EE; }
+  .dark .rosette { position: absolute; width: 1500px; height: 1500px; right: -520px; top: -210px; opacity: .16; }
+  .dark .band { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 64px; opacity: .22; }
+  .dark .frame { position: absolute; inset: 34px; border: 1px solid rgba(111,211,196,.28); pointer-events: none; }
+  .dark .frame::after { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(111,211,196,.12); }
+  .cover { padding: 150px 150px 120px; }
+  .cover .lockup { width: 820px; margin-left: -34px; }
+  .cover .tag { font: 400 50px/1.25 var(--serif); color: #F4F5F2; max-width: 1160px; margin-top: 44px; }
+  .cover .tag em { font-style: italic; color: var(--signal-pale); }
+  .meta { display: grid; grid-template-columns: 240px 1fr; row-gap: 16px; margin-top: auto; max-width: 980px;
+          border-top: 1px solid rgba(230,233,238,.25); padding-top: 30px; }
+  .meta dt { font: 500 16px/1.5 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: #8C97A8; }
+  .meta dd { font: 400 23px/1.4 var(--sans); color: #E6E9EE; }
+  .classif { position: absolute; top: 70px; right: 150px; font: 600 15px/1 var(--mono); letter-spacing: .26em; color: var(--signal-pale);
+             border: 1px solid rgba(111,211,196,.5); padding: 11px 16px; text-transform: uppercase; }
 
-  /* Screens */
-  .shot { max-height: 800px; align-self: flex-start; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 80px rgba(0,0,0,.55); background: #fff; }
-  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-  .bullets { list-style: none; margin-top: 44px; }
-  .bullets li { font-size: 28px; line-height: 1.4; color: var(--muted); padding: 18px 0 18px 36px; border-top: 1px solid var(--line); position: relative; }
-  .bullets li::before { content: ""; position: absolute; left: 0; top: 30px; width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
-  .bullets li b { color: var(--text); font-weight: 700; }
+  /* ---------- 02 gate register ---------- */
+  .gate-wrap { display: grid; grid-template-columns: 360px 1fr; column-gap: 40px; row-gap: 34px; margin-top: 58px; align-items: center; }
+  .cyc { border-left: 3px solid var(--ink); padding-left: 18px; }
+  .cyc b { display: block; font: 600 25px/1.2 var(--sans); }
+  .cyc span { display: block; font: 500 16px/1.4 var(--mono); letter-spacing: .12em; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
+  .cyc em { font-style: normal; color: var(--crimson); }
+  .sq { display: flex; flex-wrap: wrap; gap: 8px; max-width: 1260px; }
+  .sq i { width: 40px; height: 40px; background: var(--ink); display: block; }
+  .sq i.x { background: var(--crimson); outline: 3px solid var(--crimson); outline-offset: 3px; margin-left: 4px; }
+  .legend { display: flex; gap: 36px; margin-top: 40px; font: 500 17px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .legend i { display: inline-block; width: 16px; height: 16px; background: var(--ink); vertical-align: -2px; margin-right: 10px; }
+  .legend i.x { background: var(--crimson); }
 
-  /* Tables */
-  table { width: 100%; border-collapse: collapse; margin-top: 56px; font-size: 27px; }
-  th { text-align: left; font: 600 18px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: #6b747e; padding: 0 0 20px; border-bottom: 1px solid var(--line); }
-  td { padding: 22px 0; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.35; }
-  td:first-child { font-weight: 700; width: 30%; }
-  td.dim { color: var(--muted); }
-  .pill { display: inline-block; font: 700 17px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .14em; padding: 9px 14px; border-radius: 6px; }
-  .pill.live { background: #123a2a; color: var(--accent); }
-  .pill.ready { background: #11263f; color: #6cb6ff; }
-  .pill.next { background: #2a2111; color: var(--amber); }
-  .pill.open { background: #3a1416; color: #ff8a8d; }
+  /* ---------- 03 statistical bulletin ---------- */
+  .tbl-cap { font: 600 17px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: auto; padding-bottom: 18px; border-bottom: 2px solid var(--ink); }
+  .figs { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .fig { padding: 34px 36px 8px 0; border-right: 1px solid var(--rule); }
+  .fig + .fig { padding-left: 36px; }
+  .fig:last-child { border-right: 0; }
+  .fig b { display: block; font: 600 82px/1 var(--serif); white-space: nowrap; letter-spacing: -.02em; }
+  .fig b.x { color: var(--crimson); }
+  .fig span { display: block; font-size: 23px; line-height: 1.42; color: var(--muted); margin-top: 18px; }
 
-  .quote { font-size: 54px; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; max-width: 1500px; }
-  .draft { position: absolute; top: 46px; right: 130px; font: 700 16px/1 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing: .2em; color: var(--amber); border: 1px solid #5a4418; padding: 10px 14px; border-radius: 6px; }
+  /* ---------- 04 procedure ---------- */
+  .proc { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px; margin-top: 84px; }
+  .proc::before { content: ""; position: absolute; left: 0; right: 0; top: 29px; border-top: 2px solid var(--ink); }
+  .step { position: relative; }
+  .step .node { width: 60px; height: 60px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink);
+                display: flex; align-items: center; justify-content: center; font: 600 24px/1 var(--serif); color: var(--ink); position: relative; }
+  .step .node::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; border: 1px solid var(--signal); }
+  .step .when { font: 600 17px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--signal-deep); margin-top: 34px; }
+  .step h3 { font: 600 44px/1.1 var(--serif); color: var(--ink); margin: 16px 0 16px; }
+  .step p { font-size: 25px; line-height: 1.5; color: var(--muted); max-width: 470px; }
+  .output { margin-top: auto; display: flex; align-items: center; gap: 28px; background: var(--ink); color: #E6E9EE; padding: 26px 34px; font-size: 24px; }
+  .output .lbl { font: 600 16px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--signal-pale); white-space: nowrap; padding-right: 28px; border-right: 1px solid rgba(230,233,238,.25); }
+
+  /* ---------- 05/06 exhibits ---------- */
+  .split { display: grid; grid-template-columns: 600px 1fr; gap: 70px; flex: 1; min-height: 0; }
+  .split h2 { font-size: 54px; }
+  .points { list-style: none; margin-top: 34px; counter-reset: pt; }
+  .points li { counter-increment: pt; font-size: 24px; line-height: 1.45; color: var(--muted); padding: 18px 0 18px 58px; border-top: 1px solid var(--rule); position: relative; }
+  .points li:last-child { border-bottom: 1px solid var(--rule); }
+  .points li::before { content: counter(pt, lower-roman) "."; position: absolute; left: 0; top: 18px; font: italic 400 26px/1.35 var(--serif); color: var(--signal-deep); }
+  .exhibit { display: flex; flex-direction: column; min-height: 0; }
+  .exhibit .cap { display: flex; justify-content: space-between; font: 600 16px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--ink);
+                  padding-bottom: 14px; border-bottom: 2px solid var(--ink); }
+  .exhibit .cap span { color: var(--muted); font-weight: 500; }
+  .exhibit .plate { flex: 1; min-height: 0; margin-top: 16px; border: 1px solid var(--rule); background: #fff; padding: 14px; box-shadow: 0 1px 0 var(--rule-2), 0 18px 40px rgba(11,18,32,.10); }
+  .exhibit .plate div { width: 100%; height: 100%; overflow: hidden; border: 1px solid var(--rule-2); }
+  .exhibit .plate img { display: block; width: 100%; }
+
+  /* ---------- registers (07, 09) ---------- */
+  table { width: 100%; border-collapse: collapse; margin-top: 50px; font-size: 25px; }
+  th { text-align: left; font: 600 16px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); padding: 0 24px 16px 0; border-bottom: 2px solid var(--ink); }
+  td { padding: 21px 24px 21px 0; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.38; color: var(--muted); }
+  td.k { font-weight: 600; color: var(--ink); width: 27%; }
+  td.n { font: 500 18px/1.7 var(--mono); color: var(--steel); width: 80px; letter-spacing: .06em; }
+  .st { display: inline-flex; align-items: center; gap: 10px; font: 600 16px/1 var(--mono); letter-spacing: .16em; padding: 8px 12px 8px 10px; border: 1.5px solid currentColor; white-space: nowrap; }
+  .st::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; box-sizing: border-box; }
+  .st.live { color: var(--signal-deep); }
+  .st.ready { color: var(--slate-blue); }
+  .st.ready::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); border: 1.5px solid currentColor; }
+  .st.next { color: var(--ochre); }
+  .st.next::before, .st.open::before { background: transparent; border: 1.5px solid currentColor; }
+  .st.open { color: var(--crimson); }
+
+  /* ---------- 08 charter ---------- */
+  .principle { border-left: 6px solid var(--ink); padding: 6px 0 6px 44px; margin-top: 10px; }
+  .principle q { display: block; font: italic 400 54px/1.25 var(--serif); color: var(--ink); quotes: "\201C" "\201D"; max-width: 1420px; }
+  .articles { display: grid; grid-template-columns: 1fr 1fr; column-gap: 70px; margin-top: 76px; }
+  .art { border-top: 1px solid var(--rule); padding: 36px 0 40px; display: grid; grid-template-columns: 110px 1fr; }
+  .art .no { font: 600 17px/2.3 var(--mono); letter-spacing: .16em; color: var(--signal-deep); text-transform: uppercase; }
+  .art h4 { font: 600 36px/1.2 var(--serif); color: var(--ink); }
+  .art p { font-size: 25px; line-height: 1.45; color: var(--muted); margin-top: 12px; }
+
+  /* ---------- 10 closing ---------- */
+  .close { padding: 150px 150px 120px; }
+  .close .seal { position: absolute; right: 170px; top: 50%; width: 500px; height: 500px; margin-top: -290px; }
+  .close .sec { color: var(--signal-pale); }
+  .close h1 { color: #F4F5F2; font-size: 80px; max-width: 1080px; }
+  .asks { list-style: none; margin-top: 48px; max-width: 1060px; counter-reset: a; }
+  .asks li { counter-increment: a; display: grid; grid-template-columns: 70px 1fr; font-size: 27px; line-height: 1.4; color: #C3CAD5; padding: 16px 0; border-top: 1px solid rgba(230,233,238,.18); }
+  .asks li::before { content: counter(a, decimal-leading-zero); font: 600 20px/1.7 var(--mono); color: var(--signal-pale); letter-spacing: .1em; }
+  .asks li b { color: #F4F5F2; }
+  .sign { margin-top: auto; display: flex; gap: 60px; align-items: flex-end; }
+  .sign .who { border-top: 1px solid rgba(230,233,238,.5); padding-top: 14px; min-width: 420px; }
+  .sign .who b { display: block; font: 600 26px/1.3 var(--serif); color: #F4F5F2; }
+  .sign .who span { display: block; font: 500 16px/1.6 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: #8C97A8; margin-top: 4px; }
 </style>
 </head>
 <body>
 
-<!-- 1. Title -->
-<section class="slide title" data-n="01">
-  <div class="draft">DRAFT v0.1 · WORDMARK PLACEHOLDER</div>
-  <div class="wordmark">VETT<span>A</span></div>
-  <div class="tag">The public record of who Parliament lets into power, and on what evidence.</div>
-  <div class="sub">Vetting Record · Civic Tech Tools · Built by Agent9</div>
-  <div class="foot">Agent9 · agent9.dev</div>
+<!-- 01 · Cover -->
+<section class="slide dark cover">
+  <img class="rosette" src="art/rosette-dark.svg" alt="">
+  <img class="band" src="art/band-dark.svg" alt="">
+  <div class="frame"></div>
+  <div class="classif">Public record · Consultation draft v0.2</div>
+  <img class="lockup" src="art/01-aperture-lockup-reverse-clear.svg" alt="VETTA">
+  <div class="tag">The public record of who Parliament lets into power, <em>and on what evidence.</em></div>
+  <dl class="meta">
+    <dt>Instrument</dt><dd>Public Appointments Record, Republic of Kenya</dd>
+    <dt>Proposed host</dt><dd>Civic Tech Tools, Mzalendo Trust (partnership not yet agreed)</dd>
+    <dt>Prepared by</dt><dd>Agent9 · September 2026</dd>
+  </dl>
 </section>
 
-<!-- 2. Problem -->
-<section class="slide" data-n="02">
-  <div class="kicker">The problem</div>
-  <h1><span class="red">93 nominations.</span><br>One rejection.</h1>
-  <p class="lede">Kenya's Parliament vets every Cabinet Secretary and Principal Secretary before they take office. Across the 2022 Cabinet, the 2022 PS slate and the 2024 reconstitution, the gate said yes 92 times.</p>
-  <div class="gate">
-    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="x"></i>
+<!-- 02 · The problem -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="sec">01 · The problem</div>
+  <h1><span class="crimson">93 nominations.</span> One rejection.</h1>
+  <p class="lede">Kenya's Parliament vets every Cabinet Secretary and Principal Secretary before they take office. Across three vetting cycles the gate said yes 92 times.</p>
+  <div class="gate-wrap">
+    <div class="cyc"><b>Cabinet, 2022</b><span>22 nominated · 22 approved</span></div>
+    <div class="sq" data-n="22"></div>
+    <div class="cyc"><b>Principal Secretaries, 2022</b><span>51 nominated · 51 approved</span></div>
+    <div class="sq" data-n="51"></div>
+    <div class="cyc"><b>Cabinet reconstitution, 2024</b><span>20 nominated · <em>1 rejected</em></span></div>
+    <div class="sq" data-n="20" data-x="1"></div>
   </div>
-  <div class="legend">ONE SQUARE PER NOMINATION · 92 APPROVED · <span class="red">1 REJECTED BY THE HOUSE</span> · CS 2022, PS 2022, CS 2024</div>
-  <div class="foot">Source: Vetting Record ledger, 93 linked records</div>
+  <div class="legend"><span><i></i>Approved by the House</span><span><i class="x"></i>Rejected by the House</span><span>One square per nomination</span></div>
+  <div class="foot"><span>Source: Vetting Record ledger, 93 linked records</span><span class="pg">02 / 10</span></div>
 </section>
 
-<!-- 3. Evidence -->
-<section class="slide" data-n="03">
-  <div class="kicker">What the record shows</div>
+<!-- 03 · The evidence -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="sec">02 · What the record shows</div>
   <h2>A mass dismissal that returned half the cabinet.</h2>
-  <p class="lede">On 11 July 2024, during the Finance Bill protests, the President dismissed the cabinet. Four weeks later, Parliament approved its replacement. The pattern only appears when appointment histories are linked per person.</p>
-  <div class="stats">
-    <div class="stat g"><b>98.9%</b><span>Approval rate across three vetting cycles (92 of 93)</span></div>
-    <div class="stat r"><b>10 of 19</b><span>2024 appointees who sat in the cabinet dissolved four weeks earlier</span></div>
-    <div class="stat a"><b>9 of 10</b><span>Returnees who simply changed docket</span></div>
-    <div class="stat r"><b>231 days</b><span>Gender docket vacant after the only House rejection</span></div>
+  <p class="lede">On 11 July 2024, during the Finance Bill protests, the President dismissed the cabinet. Four weeks later, Parliament approved its replacement. The pattern appears only when appointment histories are linked per person.</p>
+  <div class="tbl-cap">Table 1 · Key figures, three vetting cycles</div>
+  <div class="figs">
+    <div class="fig"><b>98.9%</b><span>Approval rate across three vetting cycles (92 of 93)</span></div>
+    <div class="fig"><b class="x">10 of 19</b><span>2024 appointees who sat in the cabinet dissolved four weeks earlier</span></div>
+    <div class="fig"><b>9 of 10</b><span>Returnees who simply changed docket</span></div>
+    <div class="fig"><b class="x">231 days</b><span>Gender docket vacant after the only House rejection</span></div>
   </div>
-  <div class="foot">Computed from linked records, not asserted</div>
+  <div class="foot"><span>Computed from linked records, not asserted</span><span class="pg">03 / 10</span></div>
 </section>
 
-<!-- 4. Product loop -->
-<section class="slide" data-n="04">
-  <div class="kicker">What VETTA does</div>
+<!-- 04 · Procedure -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="sec">03 · What VETTA does</div>
   <h2>One durable, citable record for every public appointment.</h2>
-  <div class="acts">
-    <div class="act"><div class="when">Before · T-30 to hearing</div><h3>Dossier</h3><p>Source-linked appointment history for every nominee. A public question queue, ranked by citizens.</p></div>
-    <div class="act"><div class="when">During · 28-day window</div><h3>Hearing record</h3><p>Which questions MPs asked, which they ignored, per topic. Silence becomes visible.</p></div>
-    <div class="act"><div class="when">After · post-vote</div><h3>Vote trail</h3><p>Committee report against citizen submissions. A per-MP record, shareable at the next election.</p></div>
+  <div class="proc">
+    <div class="step"><div class="node">I</div><div class="when">Before · T-30 to hearing</div><h3>Dossier</h3><p>Source-linked appointment history for every nominee. A public question queue, ranked by citizens.</p></div>
+    <div class="step"><div class="node">II</div><div class="when">During · 28-day window</div><h3>Hearing record</h3><p>Which questions MPs asked, which they ignored, per topic. Silence becomes visible.</p></div>
+    <div class="step"><div class="node">III</div><div class="when">After · post-vote</div><h3>Vote trail</h3><p>Committee report against citizen submissions. A per-MP record, shareable at the next election.</p></div>
   </div>
-  <div class="foot">Built as a module for Mzalendo's Civic Tech Tools</div>
+  <div class="output"><span class="lbl">Output at every stage</span><span>A dated, source-linked entry in the public ledger, hashed and mirrored so it cannot be quietly withdrawn.</span></div>
+  <div class="foot"><span>Proposed module for Mzalendo's Civic Tech Tools</span><span class="pg">04 / 10</span></div>
 </section>
 
-<!-- 5. Ledger screen -->
-<section class="slide" data-n="05">
-  <div class="row grow">
-    <div style="width:640px">
-      <div class="kicker">The ledger</div>
-      <h2 style="font-size:60px">Every appointment linked to the person.</h2>
-      <ul class="bullets">
+<!-- 05 · Exhibit A -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="split">
+    <div>
+      <div class="sec">04 · The ledger</div>
+      <h2>Every appointment linked to the person.</h2>
+      <ul class="points">
         <li><b>93 people, 111 appointments</b>, each with its nomination, decision and exit dates.</li>
         <li><b>Every fact cited</b> to dated reporting or the official record.</li>
         <li><b>Cross-checked</b> across independent sources before it ships.</li>
       </ul>
     </div>
-    <div class="shot grow"><img src="03-record.png" alt="Vetting Record ledger entry"></div>
+    <div class="exhibit">
+      <div class="cap">Exhibit A · Appointment record <span>Working prototype</span></div>
+      <div class="plate"><div><img src="03-record.png" alt="Vetting Record appointment history for one person"></div></div>
+    </div>
   </div>
-  <div class="foot">Working prototype · screenshot</div>
+  <div class="foot"><span>Screenshot of the working prototype, September 2026</span><span class="pg">05 / 10</span></div>
 </section>
 
-<!-- 6. Signals screen -->
-<section class="slide" data-n="06">
-  <div class="row grow">
-    <div style="width:640px">
-      <div class="kicker">Pattern signals</div>
-      <h2 style="font-size:60px">Computed, not asserted.</h2>
-      <ul class="bullets">
+<!-- 06 · Exhibit B -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="split">
+    <div>
+      <div class="sec">05 · Pattern signals</div>
+      <h2>Computed, not asserted.</h2>
+      <ul class="points">
         <li><b>8 deterministic rules</b> run over the ledger at build time.</li>
         <li>Each rule is stated in plain language, so <b>anyone can re-derive a match by hand</b>.</li>
         <li>A signal marks <b>a pattern in the process</b>. It is never a finding about a person.</li>
         <li>The ledger has already <b>caught two errors</b> in the project's own working notes.</li>
       </ul>
     </div>
-    <div class="shot grow"><img src="04-signals.png" alt="Pattern signals page"></div>
+    <div class="exhibit">
+      <div class="cap">Exhibit B · Pattern signals <span>Working prototype</span></div>
+      <div class="plate"><div><img src="04-signals.png" alt="Pattern signals page"></div></div>
+    </div>
   </div>
-  <div class="foot">Working prototype · screenshot</div>
+  <div class="foot"><span>Screenshot of the working prototype, September 2026</span><span class="pg">06 / 10</span></div>
 </section>
 
-<!-- 7. Trust architecture -->
-<section class="slide" data-n="07">
-  <div class="kicker">Built to stay up</div>
+<!-- 07 · Resilience register -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="sec">06 · Built to stay up</div>
   <h2>A public record is only useful if it survives pressure.</h2>
   <table>
-    <tr><th>Layer</th><th style="width:170px">Status</th><th>What it guarantees</th></tr>
-    <tr><td>Static site</td><td><span class="pill live">LIVE</span></td><td class="dim">No database to take down. Any host, mirror or USB stick can serve it.</td></tr>
-    <tr><td>Content hashes</td><td><span class="pill live">LIVE</span></td><td class="dim">sha256 per record plus a ledger root. Tampering on any mirror is detectable.</td></tr>
-    <tr><td>Open data export</td><td><span class="pill live">LIVE</span></td><td class="dim">Ledger, manifest and events published for independent archiving.</td></tr>
-    <tr><td>Signed Nostr events</td><td><span class="pill ready">READY</span></td><td class="dim">Each record is a replaceable, signed event. Blocking one domain does not remove it.</td></tr>
-    <tr><td>Secure tip line</td><td><span class="pill next">PLANNED</span></td><td class="dim">Sealed messages to reviewers, reachable even if the domain is blocked.</td></tr>
+    <tr><th>No.</th><th>Safeguard</th><th style="width:220px">Status</th><th>What it guarantees</th></tr>
+    <tr><td class="n">6.1</td><td class="k">Static site</td><td><span class="st live">LIVE</span></td><td>No database to take down. Any host, mirror or USB stick can serve it.</td></tr>
+    <tr><td class="n">6.2</td><td class="k">Content hashes</td><td><span class="st live">LIVE</span></td><td>SHA-256 per record plus a ledger root. Tampering on any mirror is detectable.</td></tr>
+    <tr><td class="n">6.3</td><td class="k">Open data export</td><td><span class="st live">LIVE</span></td><td>Ledger, manifest and events published for independent archiving.</td></tr>
+    <tr><td class="n">6.4</td><td class="k">Signed Nostr events</td><td><span class="st ready">READY</span></td><td>Each record is a replaceable, signed event. Blocking one domain does not remove it.</td></tr>
+    <tr><td class="n">6.5</td><td class="k">Secure tip line</td><td><span class="st next">PLANNED</span></td><td>Sealed messages to reviewers, reachable even if the domain is blocked.</td></tr>
   </table>
-  <div class="foot">No cookies · No trackers</div>
+  <div class="foot"><span>No cookies · No trackers · Status per the prototype's Resilience page</span><span class="pg">07 / 10</span></div>
 </section>
 
-<!-- 8. Safety -->
-<section class="slide" data-n="08">
-  <div class="kicker">Defamation safety by design</div>
-  <div class="quote" style="margin-top:20px">"A record with no signals is not an endorsement.<br>A record with signals is not an accusation."</div>
-  <ul class="bullets" style="max-width:1450px;margin-top:64px">
-    <li><b>No bare allegations.</b> Every flag cites a source document, and rejection grounds are recorded verbatim.</li>
-    <li><b>Process, not persons.</b> Signals describe how an appointment moved through the gate.</li>
-    <li><b>Corrections are first-class.</b> A secure reporting channel, and corrections replace the old record everywhere it is mirrored.</li>
-    <li><b>Experimental scoring stays gated.</b> The Integrity Index runs on synthetic data, stamped MOCK and pseudonymised for any public deployment.</li>
-  </ul>
-  <div class="foot">Kenya's 2027 election raises the stakes on accuracy</div>
+<!-- 08 · Charter -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="sec">07 · Editorial safeguards</div>
+  <div class="principle"><q>A record with no signals is not an endorsement. A record with signals is not an accusation.</q></div>
+  <div class="articles">
+    <div class="art"><span class="no">Art. 1</span><div><h4>No bare allegations</h4><p>Every flag cites a source document, and rejection grounds are recorded verbatim.</p></div></div>
+    <div class="art"><span class="no">Art. 2</span><div><h4>Process, not persons</h4><p>Signals describe how an appointment moved through the gate.</p></div></div>
+    <div class="art"><span class="no">Art. 3</span><div><h4>Corrections are first-class</h4><p>A secure reporting channel, and corrections replace the old record everywhere it is mirrored.</p></div></div>
+    <div class="art"><span class="no">Art. 4</span><div><h4>Experimental scoring stays gated</h4><p>The Integrity Index runs on synthetic data, stamped MOCK and pseudonymised for any public deployment.</p></div></div>
+  </div>
+  <div class="foot"><span>Kenya's 2027 election raises the stakes on accuracy</span><span class="pg">08 / 10</span></div>
 </section>
 
-<!-- 9. Status -->
-<section class="slide" data-n="09">
-  <div class="kicker">Where it stands</div>
+<!-- 09 · Programme -->
+<section class="slide">
+  <div class="mast"><img src="art/01-aperture-mark.svg" alt=""><span class="name">VETTA</span><span class="div"></span><span class="unit">Public Appointments Record</span><span class="ref">Consultation draft v0.2 · Sep 2026</span></div>
+  <div class="sec">08 · Where it stands</div>
   <h2>Working prototype today. Election-ready by 2027.</h2>
   <table>
-    <tr><th>Phase</th><th style="width:210px">Status</th><th>Scope</th></tr>
-    <tr><td>Ledger and signals</td><td><span class="pill live">BUILT</span></td><td class="dim">93 records sealed, 8 signal rules, overview, vetting gate, scoring sandbox</td></tr>
-    <tr><td>Resilience layer</td><td><span class="pill live">BUILT</span></td><td class="dim">Static build, content hashes, open data, Nostr export</td></tr>
-    <tr><td>Hardening · Oct–Nov 2026</td><td><span class="pill next">NEXT</span></td><td class="dim">Gazette watcher, Hansard parser, citizen questions, CSO submission portal</td></tr>
-    <tr><td>Scale · 2027</td><td><span class="pill next">NEXT</span></td><td class="dim">Kiswahili UI, SMS alerts, per-MP scorecards ahead of the August 2027 election</td></tr>
-    <tr><td>Partnership</td><td><span class="pill open">OPEN</span></td><td class="dim">Hosting and editorial ownership with Mzalendo, not yet agreed</td></tr>
+    <tr><th>Phase</th><th>Workstream</th><th style="width:220px">Status</th><th>Scope</th></tr>
+    <tr><td class="n">I</td><td class="k">Ledger and signals</td><td><span class="st live">BUILT</span></td><td>93 records sealed, 8 signal rules, overview, vetting gate, scoring sandbox</td></tr>
+    <tr><td class="n">II</td><td class="k">Resilience layer</td><td><span class="st live">BUILT</span></td><td>Static build, content hashes, open data, Nostr export</td></tr>
+    <tr><td class="n">III</td><td class="k">Hardening · Oct to Nov 2026</td><td><span class="st next">NEXT</span></td><td>Gazette watcher, Hansard parser, citizen questions, CSO submission portal</td></tr>
+    <tr><td class="n">IV</td><td class="k">Scale · 2027</td><td><span class="st next">NEXT</span></td><td>Kiswahili interface, SMS alerts, per-MP scorecards ahead of the August 2027 election</td></tr>
+    <tr><td class="n">V</td><td class="k">Partnership</td><td><span class="st open">OPEN</span></td><td>Hosting and editorial ownership with Mzalendo, not yet agreed</td></tr>
   </table>
-  <div class="foot">Cloudflare edge · Next.js · open data</div>
+  <div class="foot"><span>Cloudflare edge · Next.js · Open data</span><span class="pg">09 / 10</span></div>
 </section>
 
-<!-- 10. Ask -->
-<section class="slide title" data-n="10">
-  <div class="kicker">The ask</div>
-  <h1 style="max-width:1500px">Put the vetting gate on the record before the 2027 election.</h1>
-  <p class="lede" style="font-size:36px">Partner with us to host VETTA under Civic Tech Tools, own the editorial review, and put every appointment in the next Parliament on a public, verifiable record.</p>
-  <div class="sub">Terry Richards · Founder, Agent9 · agent9.dev</div>
+<!-- 10 · The ask -->
+<section class="slide dark close">
+  <img class="rosette" src="art/rosette-dark.svg" alt="" style="right:-820px;top:-420px;opacity:.10">
+  <img class="band" src="art/band-dark.svg" alt="">
+  <div class="frame"></div>
+  <img class="seal" src="art/seal-reverse.svg" alt="VETTA seal">
+  <div class="sec">09 · The ask</div>
+  <h1>Put the vetting gate on the record before the 2027 election.</h1>
+  <ol class="asks">
+    <li><span><b>Host VETTA</b> under Mzalendo's Civic Tech Tools.</span></li>
+    <li><span><b>Own the editorial review</b>, with corrections handled in the open.</span></li>
+    <li><span><b>Put every appointment</b> in the next Parliament on a public, verifiable record.</span></li>
+  </ol>
+  <div class="sign">
+    <div class="who"><b>Terry Richards</b><span>Founder, Agent9 · agent9.dev</span></div>
+  </div>
 </section>
 
+<script>
+  document.querySelectorAll(".sq").forEach(el => {
+    const n = +el.dataset.n, x = +(el.dataset.x || 0);
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("i");
+      if (i >= n - x) s.className = "x";
+      el.appendChild(s);
+    }
+  });
+</script>
 </body>
 </html>
