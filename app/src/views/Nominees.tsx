@@ -15,7 +15,7 @@ export default function Nominees() {
     <main className="doc">
       <header className="masthead">
         <p className="kicker"><span className="rule"></span>Act 1 · Before the vote</p>
-        <h1>The Register of Nominees</h1>
+        <h1>The Register of Nominees Subjected to Public Scrutiny</h1>
         <p className="standfirst">
           {nom.length} nominees vetted for the Cabinet, {ep.date}. Every flag and every positive finding is
           sourced; empty sections are rendered as empty, never padded.
