@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 The Vetting Loop Contributors
+Copyright (c) 2026 Vetta contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+The MIT license above covers the source code in this repository.
+
+The record's DATA is a different matter: it is compiled from public documents that
+carry their own terms, and some items are marked `needs_verification`. See
+ATTRIBUTION.md before reusing the data. In particular, do not cite a
+`needs_verification` item externally without checking it against the primary source.

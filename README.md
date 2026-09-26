@@ -1,194 +1,126 @@
-# The Vetting Loop
+![Vetta — Vetting in Action](docs/assets/hero.svg)
 
-> **"Agency without accountability is a suggestion box; accountability without agency is surveillance. We build both."**
+[![Verify and package Vetta](https://github.com/Jimmy-Hernandez/vetting-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/Jimmy-Hernandez/vetting-loop/actions/workflows/ci.yml)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-222222)](LICENSE)
+[![Data review: ongoing](https://img.shields.io/badge/data_review-ongoing-b5212c)](docs/DATA-QUALITY.md)
 
-A citizen platform for parliamentary vetting in Kenya — built as a module on [Mzalendo's](https://mzalendo.com) existing parliamentary-monitoring rails.
+**Who was nominated. What citizens submitted. What the committee asked. How the decision was made.**
 
----
+Vetta connects the stages of Kenyan parliamentary vetting in one source-linked
+public record. Its central exhibit is the August 2024 Cabinet vetting: **20 nominees,
+19 approvals and one rejection**. The approvals passed by **voice vote**. The record
+contains no individual MP roll call; Vetta makes that absence visible without
+inventing votes or treating an allegation as a verdict.
 
-## Screenshots
+**Start here:** [Judge walkthrough](docs/JUDGE-GUIDE.md) · [Architecture](docs/ARCHITECTURE.md) ·
+[Data quality](docs/DATA-QUALITY.md) · [Verification](docs/VERIFICATION.md) ·
+[Source handover](docs/SOURCE-SYNC.md)
 
-| Homepage | Nominee Dossier |
-|----------|----------------|
-| ![Homepage](docs/mockups/01-homepage.jpg) | ![Dossier](docs/mockups/02-nominee-dossier.jpg) |
+> [!IMPORTANT]
+> **Working hackathon application; editorial verification remains open.** The checked-in
+> record contains provisional and OCR-derived material. Structural tests do not certify
+> factual accuracy. Nostr publication remains deliberately paused pending due diligence.
+> The companion API and encrypted-tip code are preserved source, not features enabled in
+> the primary demo.
 
-| Hearing Record / Silence Map | Vote Trail |
-|------------------------------|------------|
-| ![Hearing](docs/mockups/03-hearing-record.jpg) | ![Vote Trail](docs/mockups/04-vote-trail.jpg) |
+## See the record
 
-→ Full design spec and tokens: [docs/MOCKUPS.md](docs/MOCKUPS.md)
+![Vetta home, captured from the merged local application](docs/assets/home-1440.png)
 
----
+*Actual application screenshot, not a concept rendering. Mobile and vote screenshots
+are included in [verification evidence](docs/VERIFICATION.md).*
 
-## What It Does
+## The accountability loop
 
-The Vetting Loop closes the gap between citizens and Parliament across three acts of every public appointment:
+| Stage | Reader can inspect | Evidence boundary |
+|---|---|---|
+| Before | Nominees, sourced flags and positive findings | Allegation is not conviction |
+| During | Committee questions and provisional memorandum extracts | OCR and completeness require review |
+| After | Decision, voice-vote absence and recorded-division contrast | No fabricated individual votes |
+| Across time | Appointment ledger and cycles | People and nominations are distinct counts |
 
-| Act | Phase | Deliverable |
-|-----|-------|-------------|
-| **Before** | T-30 → Hearing day | Source-linked nominee dossier + public question queue |
-| **During** | 28-day statutory window | Hearing record: questions asked vs. ignored, per topic |
-| **After** | Post-vote | Committee report vs. citizen submissions, per-MP vote trail |
+The committed snapshots contain **93 people, 111 nominations and 10 cycles**;
+the detailed episode contains **510 reconstructed committee-question entries,
+33 flags and 82 positive findings**. These are dataset counts, not a finding that
+every entry has passed primary-source review. The 11 provisional memorandum entries
+are not a complete or verified count of ignored citizen questions.
 
-Each episode leaves a durable, citable record — shareable at the next election.
+## Run in minutes
 
----
-
-## Integrity Index (Civic Tech Tools)
-
-A 15-year integrity record for public officers, styled to sit under Mzalendo's **Civic Tech Tools** menu.
-
-| Page | Route |
-|------|-------|
-| Index of the 20-member 2024 Cabinet vetting cohort, with ratings | `/integrity` |
-| Profile: rating, 15-year timeline, findings by source, appointment history | `/integrity/[slug]` |
-| Methodology: sources, weights, bands, safeguards | `/integrity/methodology` |
-| Roster status (2027 placeholder) | `/integrity/roster` |
-| Civic Tech Tools landing | `/civic-tech` |
-
-- **Sources:** EACC, Office of the Auditor-General, parliamentary vetting / National Assembly, Mzalendo.
-- **Lookback:** hard 15-year window ending on election day (10 Aug 2027). Older records are shown but score zero.
-- **Scoring and data:** `packages/integrity` (pure TypeScript, unit-tested).
-- **Mock data:** every finding and rating is synthetic and stamped MOCK. Mock bands are assigned by a hash of the slug against a fixed 8/6/4/2 distribution, so no rating reflects the person's reputation. Integrity pages are `noindex`.
-- **Public deployment:** set `NEXT_PUBLIC_MOCK_IDENTITY=pseudonym` to replace real names with neutral labels while findings are synthetic.
-- **2027 roster:** replace `PROFILED_ROSTER` in `packages/integrity/src/roster.ts`.
-
-![Integrity Index](docs/mockups/05-integrity-index.png)
-
----
-
-## Architecture Overview
-
-```
-vetting-loop/
-├── apps/
-│   ├── web/          # Next.js 14 public frontend (App Router)
-│   └── api/          # Hono API on Cloudflare Workers
-├── packages/
-│   ├── db/           # Drizzle ORM + D1 schema & migrations
-│   ├── types/        # Shared TypeScript types (nominee, question, vote)
-│   └── ui/           # Shared Tailwind component library
-├── docs/             # Architecture decisions, data models, design constraints
-├── infra/            # Terraform / Wrangler config
-├── scripts/          # Data-import helpers (Mzalendo, Hansard, EACC)
-└── .github/
-    └── workflows/    # CI, deploy, data-sync
-```
-
-This is a **Turborepo monorepo**. The web app and API are deployable independently.
-
----
-
-## Tech Stack
-
-| Layer | Choice | Rationale |
-|-------|--------|-----------|
-| Frontend | Next.js 14 (App Router) | SSR for SEO; citizen-facing pages need fast TTFB |
-| API | Hono on Cloudflare Workers | Edge latency; zero cold start for public endpoints |
-| Database | Cloudflare D1 (SQLite) | Zero-ops; structured data fits relational model |
-| Search | Cloudflare Vectorize | Semantic search over dossier documents |
-| Auth | Clerk | Social login + roles (citizen / CSO / admin) |
-| ORM | Drizzle | Type-safe; D1-native migrations |
-| Monorepo | Turborepo | Shared packages; parallel builds |
-| Styling | Tailwind CSS | Utility-first; consistent with Mzalendo palette |
-| Testing | Vitest + Playwright | Unit + E2E |
-
----
-
-## MVP Scope (Hackathon Weekend)
-
-**In:**
-- One real past CS vetting episode, source-linked
-- Nominee dossier with integrity flags
-- Public question queue with upvotes
-- Asked-vs-ignored hearing log
-- Per-MP vote view
-
-**Out (mocked/deferred):**
-- Live-stream integration
-- Multi-episode history
-- Kiswahili UI
-- Accounts & notifications
-
-**The signature demo moment:**
-> A source-linked integrity flag — beside the transcript where no MP asked about it — beside the vote tally where everyone approved.
-
----
-
-## Design Constraints
-
-1. **Defamation safety** — Every integrity flag cites a source document. No bare allegations.
-2. **Non-partisanship** — Outputs criticise process, not persons. Vocabulary: participation, oversight, Chapter Six.
-3. **Durability** — Every record permanent, exportable in structured formats (JSON, CSV).
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js ≥ 20
-- pnpm ≥ 9
-- Cloudflare account (Workers, D1, Vectorize)
-- Wrangler CLI ≥ 3
-
-### Install
+Requires **Node 22.12+** and npm. No cloud account, API key or paid service is required
+for the main application.
 
 ```bash
-git clone https://github.com/agent9ai/vetting-loop.git
+git clone https://github.com/Jimmy-Hernandez/vetting-loop.git
 cd vetting-loop
-pnpm install
+npm ci
+npm ci --prefix app
+npm run dev
 ```
 
-### Environment
+Open the URL printed by Vite. To reproduce the verification and production build:
 
 ```bash
-cp .env.example .env
-# Fill in: CLERK_SECRET_KEY, D1_DATABASE_ID, VECTORIZE_INDEX
+npm test
+npm run check:record
+npm run lint
+npm run build
+npm run preview --prefix app
 ```
 
-### Develop
+The build is `app/dist/`. Serve it over HTTP with a single-page-app fallback to
+`index.html`; do not open it using `file://`. The included `_redirects` covers hosts
+that support that format. CI packages the build as a downloadable Actions artifact.
+CI does not deploy the application or publish any Nostr events.
 
-```bash
-pnpm dev          # starts web (localhost:3000) + api (localhost:8787) in parallel
-```
+## How it works
 
-### Test
+The public application is **React + TypeScript + Vite** over checked-in JSON.
+Source documents and extraction outputs live under `data/`; the served snapshots
+live under `app/public/data/`. Data-thin views connect dossiers, hearings and the
+vote trail. The broader appointment ledger joins by person/slug.
 
-```bash
-pnpm test         # unit tests via Vitest
-pnpm test:e2e     # Playwright end-to-end
-```
+The project includes extraction and signed-event tooling, but the current app does
+not invoke a live AI model. Signed publication is an optional layer; signatures
+would establish publisher integrity, not truth. Relay operators can delete their
+own copies; a reader retaining a signed copy can re-host it. The design is
+takedown-resistant, not takedown-proof. See [architecture](docs/ARCHITECTURE.md) and
+the [Nostr runbook](DEMO-RUNBOOK.md).
 
-### Deploy
+## Repository orientation
 
-```bash
-pnpm deploy       # runs turbo deploy → api (wrangler publish) + web (Next.js build → Pages)
-```
+| Path | Role |
+|---|---|
+| [`app/`](app/) | Primary application and public JSON snapshots |
+| [`data/`](data/) | Source archive, OCR extracts and correction history |
+| [`scripts/`](scripts/) | Assembly, structural checks and gated Nostr tools |
+| [`docs/`](docs/) | Judge guide, architecture, audit and verification |
+| [`implementations/agent9/`](implementations/agent9/) | Complete preserved Agent9 companion source snapshot |
+| [`services/relay/`](services/relay/) | Optional Go relay source; outside the default demo |
 
----
+The [source-sync manifest](docs/source-sync-manifest.json) records checksums for the
+companion source files. Dependencies, build outputs, runtime state and signing keys
+are excluded. Historical handoff notes remain for provenance; current operating
+state is documented here and in [SOURCE-SYNC](docs/SOURCE-SYNC.md).
 
-## Data Sources
+## Credibility and contribution
 
-| Source | What It Provides | Integration |
-|--------|-----------------|-------------|
-| [Mzalendo](https://mzalendo.com) | Committee reports, MP voting histories, scorecards | REST pull + nightly sync |
-| Kenya Hansard | Hearing transcripts | PDF parse → structured JSON |
-| EACC | Ethics & Anti-Corruption Commission adverse reports | Manual-curated seed; flags require source doc |
-| Kenya Gazette | Nomination gazettement | Scrape on new vetting episode |
+Read [DATA-GUARDRAILS](DATA-GUARDRAILS.md) and [CONTRACTS](CONTRACTS.md) before editing
+records. Cite primary evidence, retain legal-status distinctions and apply the same
+evidence bar to positive findings. Corrections belong in `data/CHANGELOG.md`.
 
----
+[CONTRIBUTING](CONTRIBUTING.md) defines local checks and review expectations.
+[SECURITY](SECURITY.md) separates public bug reports from sensitive reports.
+[ROADMAP](docs/ROADMAP.md) lists the remaining evidence and usability work.
 
-## Contributing
+## Sources, purpose and license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All integrity-flag PRs require a linked source document in `docs/sources/`. No bare allegations merged.
+Built for civic accountability in the context of [AI Hack for Freedom III](https://www.aihackforfreedom.org/).
+The judge guide explains the freedom-tech relevance and demonstration boundaries;
+no contest placement, endorsement or completed submission is claimed.
 
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
----
-
-*Hackathon Problem Two · September 2026 · Built with Caroline Gaita, Jimmy, Terry Richards (Agent9)*
+Sources include the Parliament of Kenya, Hansard, Committee on Appointments reports,
+Mzalendo voting records and individually cited reporting. See [ATTRIBUTION](ATTRIBUTION.md).
+Code is [MIT](LICENSE). Third-party data and content retain their own terms;
+Mzalendo-derived datasets are subject to the attribution and ShareAlike terms stated
+in the source attribution file.

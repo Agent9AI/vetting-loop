@@ -1,15 +1,16 @@
-## What does this PR do?
-<!-- Describe the changes introduced by this PR -->
+## Result
 
-## Checklist
-- [ ] Integrity flag PRs: source document URL included
-- [ ] No bare allegations
-- [ ] TypeScript passes (`pnpm typecheck`)
-- [ ] Tests pass (`pnpm test`)
-- [ ] Non-partisan language review
+What changes for the reader or operator?
 
-## Screenshots (for UI changes)
-<!-- Attach screenshots if applicable -->
+## Evidence and checks
 
-## Data sources (for data PRs)
-<!-- Provide links to data sources -->
+- [ ] Build, lint, tests and structural record checks run
+- [ ] Relevant sources and page/line references checked for data changes
+- [ ] Allegations and positive findings use the same evidence standard
+- [ ] Voice vote remains distinct from recorded individual votes
+- [ ] Desktop/mobile routes checked for interface changes
+- [ ] No secrets, private submissions or unintended publication included
+
+## Limits
+
+What remains unverified or requires editorial review?

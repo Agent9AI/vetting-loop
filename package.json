@@ -1,30 +1,22 @@
 {
-  "name": "vetting-loop",
+  "name": "vetting-loop-scripts",
   "private": true,
-  "description": "Citizen platform for parliamentary vetting accountability — Kenya",
-  "engines": {
-    "node": ">=20",
-    "pnpm": ">=9"
+  "type": "module",
+  "dependencies": {
+    "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^2.0.1",
+    "nostr-tools": "^2.25.2",
+    "ws": "^8.21.3"
   },
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "test": "turbo test",
-    "test:e2e": "turbo test:e2e",
-    "lint": "turbo lint",
-    "typecheck": "turbo typecheck",
-    "deploy": "turbo deploy",
-    "db:generate": "turbo db:generate",
-    "db:migrate": "turbo db:migrate",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\""
+    "test": "node --test tests/*.test.mjs",
+    "check:record": "node scripts/check-record.mjs",
+    "audit:record": "node scripts/check-record.mjs --report",
+    "build": "npm --prefix app run build",
+    "dev": "npm --prefix app run dev",
+    "lint": "npm --prefix app run lint"
   },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "prettier": "^3.3.0",
-    "turbo": "^2.0.0",
-    "typescript": "^5.5.0",
-    "vitest": "^2.0.0"
-  },
-  "packageManager": "pnpm@9.7.0"
+  "engines": {
+    "node": ">=22.12.0"
+  }
 }

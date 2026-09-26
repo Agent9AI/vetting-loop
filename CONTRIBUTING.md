@@ -1,44 +1,31 @@
-# Contributing to The Vetting Loop
+# Contributing to Vetta
 
-Thank you for contributing! This project relies on community effort to maintain public accountability.
+Start with [README](README.md), [architecture](docs/ARCHITECTURE.md),
+[CONTRACTS](CONTRACTS.md) and [DATA-GUARDRAILS](DATA-GUARDRAILS.md).
+The Vite application in `app/` is the primary product. The companion implementation
+is preserved in `implementations/agent9/`; changes there do not change the main app.
 
-## Code Style
-- **TypeScript Strict**: We use strict TypeScript. `any` types are strictly prohibited.
-- **Formatting**: We use Prettier for formatting and ESLint for linting. Run `pnpm lint` and `pnpm format` before pushing.
+## Local checks
 
-## Branch Naming
-- `feature/your-feature-name`
-- `fix/bug-description`
-- `data/nominee-name-update`
+Use Node 22.12 or newer. Run `npm ci`, `npm ci --prefix app`, `npm test`,
+`npm run check:record`, `npm run lint` and `npm run build` from the root.
+Smoke-test the routes in [the judge guide](docs/JUDGE-GUIDE.md). New data checks must
+include a failing fixture, not only acceptance of the current JSON.
 
-## PR Process
-1. Fork the repo and create your branch.
-2. Ensure local tests pass.
-3. Open a PR using the provided template.
-4. Wait for a maintainer to review.
+## Evidence changes
 
-## Integrity Flag Submission Process
-If you are submitting new data (specifically Integrity Flags):
-1. **Source Document Link Required**: You must provide a valid URL to the source document.
-2. **Document Metadata**: Include the document type, publisher, and date.
-3. Use the PR template checklist to verify compliance.
+Cite the primary source, its page/line and the date of retrieval. Preserve original
+legal status and distinguish an allegation from a conviction. Apply the same
+sourcing standard to positive findings. Never create an individual MP vote where
+the source records a voice vote. Log verified corrections in `data/CHANGELOG.md`.
+Treat frozen contracts as versioned interfaces; propose changes for team review.
 
-## Data Quality Standards
-- No bare allegations. All claims must be backed by official reports (Auditor General, EACC, Courts, reputable journalism).
-- Ensure dates and spelling match official records.
+`npm run check:record` checks structure; it does **not** implement every editorial
+gate. Read [the data audit](docs/DATA-QUALITY.md) before describing data as verified.
 
-## Local Development Setup
-1. Clone repo: `git clone ...`
-2. Install dependencies: `pnpm install`
-3. Setup local DB: `pnpm run db:setup`
-4. Start dev server: `pnpm run dev`
+## Pull requests
 
-## Testing Requirements
-- Unit tests must pass (`pnpm test`).
-- E2E tests (Playwright) must pass before merge.
-
-## Non-Partisanship Policy
-We maintain strict neutrality.
-- **Acceptable**: "The Auditor General report (2022) flagged Ksh 5M in unaccounted funds under the nominee's tenure."
-- **Unacceptable**: "The corrupt nominee stole our money."
-Use objective, fact-based language. Avoid emotive adjectives.
+Explain the user-visible change, relevant source evidence, checks run and remaining
+limits. Include desktop/mobile screenshots for visual changes. Keep credentials,
+private keys, runtime databases and generated dependencies out of Git. Do not
+activate Nostr or deployment workflows as a side effect of a code contribution.
