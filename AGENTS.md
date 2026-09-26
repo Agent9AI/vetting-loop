@@ -1,5 +1,13 @@
 # AGENTS.md — Vetta (formerly 'Vetting Loop' during build) (DSH handover brief)
 
+## Canonical repository and production deploys (read first, 2026-09-26)
+
+- **Agent9AI/vetting-loop is the only canonical repository.** Push and pull here. Jimmy-Hernandez/vetting-loop is history only; do not deploy from it or from any other checkout.
+- **Production** is Cloudflare Pages `vetta` (vetta.agent9.dev) and `vetta-ke` (vetta-ke.pages.dev). Neither is git-connected. Deploy only with `scripts/deploy-prod.sh`, which refuses anything but a clean `origin/main`, runs the tests and the record gate, and rebuilds from scratch. Always deploy to both projects.
+- **Route structure** (Terry, 6cf4641): `/voice` nominees, `/vote` the people ledger, `/verdict` the accountability trail, `/hearing`. The hero reads "Vetting in action." Do not revert either.
+- `_headers` sets `noindex` on purpose. No em dashes or double dashes in site copy; verbatim source quotes keep their punctuation.
+- The sections below are the original hackathon handover brief and are partly out of date (routes, repo visibility, deploy policy).
+
 **You are the DSH agent on jimmys-macbook-pro-2, taking over this project as its primary builder.** This file is your complete briefing — read it fully before any work. Your operator is Jimmy (Discord), coordinating with KITT (orchestrator on the Mac mini) and a human co-developer, Terry (separate implementation, merge later). Work autonomously; push everything; never fabricate.
 
 ---
